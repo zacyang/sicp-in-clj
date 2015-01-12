@@ -8,5 +8,13 @@
     (first col)
     (last-pair (rest col))
     )
-  )  
+  )
+
+(defn reverse-list
+  [col]
+  (if (<= 0 (count col))
+    (reduce conj () col )
+    col
+    )
+  )
 
