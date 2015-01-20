@@ -42,5 +42,13 @@
         (cons (first set1)
               (interaction-set (rest set1) set2)) 
         :else (interaction-set (rest set1) set2)
-                           ))
-  
+        ))
+
+(defn union-set
+  [set1 set2]
+  (cond (empty? set1) set2
+        (empty? set2) set1
+        (not (element-of-set? (first set1) set2)) (cons (first set1) (union-set (rest set1) set2))
+        (element-of-set? (first set1) set2) (union-set (rest set1) set2)
+        )
+  ) 

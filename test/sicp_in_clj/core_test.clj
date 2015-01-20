@@ -29,11 +29,12 @@
 (deftest sicp-chapter2-2-23
   (testing "unsorted collection"
     (is (= true (element-of-set? 3 '(1 2 3)))))
-  (is (= false (element-of-set? 1 '(2))))
-  
+    (is (= false (element-of-set? 1 '(2))))
+    (is (= false (element-of-set? 1 '())))
+    (is (= false (element-of-set? nil '(2))))
+
   (testing "unsorted collection conj"
     (is (= '(1) (adjoin-set 1 '())))
-    
     (is (= '(2 3) (adjoin-set 2 '(3))))
                 
     (testing "interaction set"
@@ -41,4 +42,11 @@
       (is (= '() (interaction-set '(5 2) '(1 3))))
       (is (= '(1 2) (interaction-set '( 5 6 3 1 3 2) '(1 2))))
       )
-))
+    ))
+
+(deftest sicp-chapter2-2-29
+  (testing "impl union-set for unsorted col"
+    (is (= '(1 2) (union-set '(1) '(2))))
+    (is (= '(1 2) (union-set '(1 2) '(1 2))))
+    )
+  )
