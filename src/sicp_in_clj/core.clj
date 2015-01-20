@@ -11,6 +11,7 @@
   )
 
 (defn reverse-list
+  "reverse the list"
   [col]
   (if (<= 0 (count col))
     (reduce conj () col )
@@ -18,3 +19,28 @@
     )
   )
 
+(defn element-of-set?
+  [element col]
+  (cond (nil? col) false
+        (empty? col) false
+        (= element (first col)) true
+        :else (element-of-set? element (rest col))
+        )
+  )
+
+(defn adjoin-set
+  [element col]
+  (if (element-of-set? element col)
+    col
+    (cons element col))
+  )
+
+(defn interaction-set
+  [set1 set2]
+  (cond (or (empty? set1) (empty? set2)) '()
+        (element-of-set? (first set1) set2)
+        (cons (first set1)
+              (interaction-set (rest set1) set2)) 
+        :else (interaction-set (rest set1) set2)
+                           ))
+  

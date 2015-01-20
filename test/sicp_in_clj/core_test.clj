@@ -23,6 +23,22 @@
     )
   (testing "should return reversed list list when input list contains multi-item"
     (is (= '(3 2 1) (reverse-list '(1 2 3))))
-    )
-  
+    )                                   
   )
+
+(deftest sicp-chapter2-2-23
+  (testing "unsorted collection"
+    (is (= true (element-of-set? 3 '(1 2 3)))))
+  (is (= false (element-of-set? 1 '(2))))
+  
+  (testing "unsorted collection conj"
+    (is (= '(1) (adjoin-set 1 '())))
+    
+    (is (= '(2 3) (adjoin-set 2 '(3))))
+                
+    (testing "interaction set"
+      (is (= '(1) (interaction-set '(1 2) '(1 3))))
+      (is (= '() (interaction-set '(5 2) '(1 3))))
+      (is (= '(1 2) (interaction-set '( 5 6 3 1 3 2) '(1 2))))
+      )
+))
