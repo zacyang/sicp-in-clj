@@ -52,3 +52,48 @@
         (element-of-set? (first set1) set2) (union-set (rest set1) set2)
         )
   ) 
+
+
+;; polor and retangular
+(defn square
+  [x]
+  (* x x))
+;; retangular representation of fushu... LoL
+
+;; (defn real-part
+;;   [z]
+;;   first z)
+
+;; (defn imag-part
+;;   [z]
+;;   (rest z))
+
+;; (defn magnitude
+;;   [z]
+;;   (Math/sqrt (+ (square (real-part z))
+;;                 (square (imag-part z)))))
+
+;; (defn angle
+;;   [z]
+;;   z)
+
+(defn make-from-real-imag
+  [x y]
+  (cons x y))
+
+(defn make-from-mag-ang
+  [r a]
+  (cons (* r (Math/cos a)) (* r (Math/sin a))))
+
+;;polor
+(defn real-part
+  [z]
+  
+  )
+
+
+
+
+
+
+

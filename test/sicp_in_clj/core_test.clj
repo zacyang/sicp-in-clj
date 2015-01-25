@@ -38,9 +38,9 @@
     (is (= '(2 3) (adjoin-set 2 '(3))))
                 
     (testing "interaction set"
-      (is (= '(1) (interaction-set '(1 2) '(1 3))))
-      (is (= '() (interaction-set '(5 2) '(1 3))))
-      (is (= '(1 2) (interaction-set '( 5 6 3 1 3 2) '(1 2))))
+     (is (= '(1) (interaction-set '(1 2) '(1 3))))
+     (is (= '() (interaction-set '(5 2) '(1 3))))
+     (is (= '(1 2) (interaction-set '( 5 6 3 1 3 2) '(1 2))))
       )
     ))
 
@@ -48,5 +48,15 @@
   (testing "impl union-set for unsorted col"
     (is (= '(1 2) (union-set '(1) '(2))))
     (is (= '(1 2) (union-set '(1 2) '(1 2))))
+    (is (= '() (union-set '() '())))
+    (is (= '(1) (union-set '() '(1))))
+    (is (= '(1) (union-set '(1) '())))
     )
   )
+;; (deftest sicp-chapter2-2-30
+;;   "tree impl"
+;;   (testing "get the entry of a tree"
+;;     (is (= 1 (entry '(1 2 3))))
+;;     )
+;;   )
+
