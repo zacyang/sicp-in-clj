@@ -1,5 +1,5 @@
 (ns sicp-in-clj.rational-test
-  (:require [clojure.test :refer :all]
+  (:use [clojure.test :refer :all]
             [sicp-in-clj.rational :refer :all]))
 (def fn-under-test make-rat)
 
