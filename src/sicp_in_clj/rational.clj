@@ -15,7 +15,7 @@
        ))
 
 ;v3
-(defn make-rat [number denom]
+(defn make-rat-v3 [number denom]
  "construct a rational number"
  (let [g (gcd number denom)
        simplified-number (/ number g)
@@ -23,20 +23,24 @@
    (make-rat-v2 simplified-number simplified-denom)
 ))
 
-;readable v4
-(defn- simplifier [number against]
-  (let [g (gcd number against)]
-    (/ number g)))
+;v4 thinking another around
+(defn- neg-pos-switch [rat]
+  (let [number (number rat)
+        denom (denom rat)]
+    (neg-pos-handle number denom make-rat-stupid-v1)
+))
 
-(defn- neg-pos-handle [number denom cons-fn]
-  (cond (and (pos? number) (pos? denom)) (cons-fn number denom)
-        (and (neg? number) (neg? denom)) (cons-fn (- number) (- denom))
-        :else (cons-fn (- (Math/abs number)) (Math/abs denom))
-       )
-)
+(defn- simplifier [rat]
+  (let [g (gcd (number rat) (denom rat))]
+    (make-rat-stupid-v1 
+     (/ (number rat) g)
+     (/ (denom rat) g))))
 
-(defn readable-make-rat [n d]
-  (neg-pos-handle (simplifier n d) (simplifier d n) make-rat-stupid-v1))
+
+(defn make-rat [n d]
+  (-> (make-rat-stupid-v1 n d)
+      simplifier
+      neg-pos-switch))
 
 
 (defn number [rational]
