@@ -1,6 +1,6 @@
-(ns sicp-in-clj.rational-test
+(ns sicp.ch2.rational-test
   (:use [clojure.test :refer :all]
-            [sicp-in-clj.rational :refer :all]))
+            [sicp.ch2.rational :refer :all]))
 (def fn-under-test make-rat)
 
 (deftest basic-rational-structure-test

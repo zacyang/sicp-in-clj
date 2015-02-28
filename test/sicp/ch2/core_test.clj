@@ -1,6 +1,6 @@
-(ns sicp-in-clj.core-test
+(ns sicp.ch2.core-test
   (:require [clojure.test :refer :all]
-            [sicp-in-clj.core :refer :all]))
+            [sicp.ch2.core :refer :all]))
 
 (deftest sicp-chapter2-2-17
   (testing "should return the last item in the list"

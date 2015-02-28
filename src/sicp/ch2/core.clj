@@ -1,9 +1,9 @@
-(ns sicp-in-clj.core) 
+(ns sicp.ch2.core)
 
 (defn last-pair
   "return the last item in the list, I will be limited to use first and last only"
   [col]
-  
+
   (if (>= 1 (count col))
     (first col)
     (last-pair (rest col))
@@ -14,7 +14,7 @@
   "reverse the list"
   [col]
   (if (<= 0 (count col))
-    (reduce conj () col )
+    (reduce conj () col)
     col
     )
   )
@@ -40,7 +40,7 @@
   (cond (or (empty? set1) (empty? set2)) '()
         (element-of-set? (first set1) set2)
         (cons (first set1)
-              (interaction-set (rest set1) set2)) 
+              (interaction-set (rest set1) set2))
         :else (interaction-set (rest set1) set2)
         ))
 
@@ -51,7 +51,7 @@
         (not (element-of-set? (first set1) set2)) (cons (first set1) (union-set (rest set1) set2))
         (element-of-set? (first set1) set2) (union-set (rest set1) set2)
         )
-  ) 
+  )
 
 
 ;; polor and retangular
@@ -88,7 +88,7 @@
 ;;polor
 (defn real-part
   [z]
-  
+
   )
 
 
