@@ -4,8 +4,17 @@
         [sicp.ch2.cons :refer :all]))
 
 (deftest basic-cons-test
-  (testing ""
+  (testing "baisc opts"
     (is (fn? (cons 1 2) ))
     (is (car (cons 1 2)) 1)
     (is (cdr (cons 1 2)) 2)
 ))
+
+(deftest sicp-24
+  (testing "given any x and y should be able get x"
+    (is (= (cdr24 (cons24 1 2)) 2))
+    ))
+
+(deftest sicp-25
+  (testing "a^2 multiply b^3 should be able to represent any integer greater than 1. And we should be able to get a and b based on a given value x."
+    (is (= 0 1))))

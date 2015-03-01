@@ -15,3 +15,12 @@
 
 (defn cdr [z]
   (z 1))
+
+(defn cons24 [x y]
+  (fn [m] (m x y)))
+
+(defn car24 [z]
+  (z (fn [p q] p)))
+
+(defn cdr24 [z]
+  (z (fn [p q] q)))
