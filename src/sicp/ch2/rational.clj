@@ -65,4 +65,21 @@
 
 
 
+(defn add-rat [x y]
+  (make-rat (+ (* (number x) (denom y))
+               (* (number y) (denom x)))
+            (* (denom x) (denom y))
+))
 
+(defn sub-rat [x y]
+  (make-rat (- (* (number x) (denom y))
+               (* (number y) (denom x)))
+            (* (denom x) (denom y))))
+
+(defn mul-rat [x y]
+  (make-rat (* (number x) (number y))
+            (* (denom x) (denom y))))
+
+(defn div-rat [x y]
+  (make-rat (* (number x) (denom y))
+            (* (number y) (denom x))))
