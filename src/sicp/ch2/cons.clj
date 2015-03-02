@@ -24,3 +24,35 @@
 
 (defn cdr24 [z]
   (z (fn [p q] q)))
+
+;;; 2.5
+(defn expt [base n]
+  (bit-shift-left base (- n 1)))
+
+(defn cons-multi-regular [x y]
+  (* (expt 2 x)
+     (expt 3 y)))
+
+(defn car-multi-regular [z]
+  "in order to get x, we need caculate how many 2^x and 3^y will suit the case. er...."
+  
+  )
+
+;;; again, thinking another way around, DONT BE FOOLED BY THE question!!!
+(defn cons-multi [x y]
+  (fn [pick] (pick x y)))
+
+(defn cons-car [z]
+  (z (fn pick-x [x y] x)))
+
+(defn cons-cdr [z]
+  (z (fn pick-y [x y] y)))
+
+(defn value-of [z]
+  (z (fn pick-value [x y]
+       (* (expt 2 x)
+          (expt 3 y)))))
+
+
+
+

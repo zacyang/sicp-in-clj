@@ -17,4 +17,5 @@
 
 (deftest sicp-25
   (testing "a^2 multiply b^3 should be able to represent any integer greater than 1. And we should be able to get a and b based on a given value x."
-    (is (= 0 1))))
+    (is (= (cons-car (cons-multi 1 3) 1)))))
+
