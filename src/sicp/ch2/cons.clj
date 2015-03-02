@@ -33,10 +33,22 @@
   (* (expt 2 x)
      (expt 3 y)))
 
+(defn- num-divs [n d]
+  (defn iter [x result]
+    (if (zero? (rem x d)) 
+      (iter (/ x d) (inc result))
+      result))
+  (iter n 0)
+)
+
 (defn car-multi-regular [z]
-  "in order to get x, we need caculate how many 2^x and 3^y will suit the case. er...."
-  
-  )
+  (num-divs z 2))
+
+(defn cdr-multi-regular [z]
+  (num-divs z 3))
+
+
+
 
 ;;; again, thinking another way around, DONT BE FOOLED BY THE question!!!
 (defn cons-multi [x y]
@@ -53,6 +65,14 @@
        (* (expt 2 x)
           (expt 3 y)))))
 
+;;; 2.6
+;;; consider a system, there's literal number exists (only non-neg)
+;;; we car def 0 and plus 1 as:
+(defn my-zero [f]
+  (fn [x] x))
 
-
+(defn add-one [n]
+  (fn [f] 
+    (fn [x] (f ((n f) x)))))
+;;; please design one and two
 
