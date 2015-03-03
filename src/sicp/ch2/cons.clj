@@ -26,19 +26,18 @@
   (z (fn [p q] q)))
 
 ;;; 2.5
-(defn expt [base n]
-  (bit-shift-left base (- n 1)))
 
 (defn cons-multi-regular [x y]
-  (* (expt 2 x)
-     (expt 3 y)))
+  (* (Math/pow 2 x)
+     (Math/pow 3 y)))
 
 (defn- num-divs [n d]
   (defn iter [x result]
     (if (zero? (rem x d)) 
       (iter (/ x d) (inc result))
       result))
-  (iter n 0)
+  (if (zero? n) 0
+      (iter n 0))
 )
 
 (defn car-multi-regular [z]
@@ -62,8 +61,8 @@
 
 (defn value-of [z]
   (z (fn pick-value [x y]
-       (* (expt 2 x)
-          (expt 3 y)))))
+       (* (Math/pow 2 x)
+          (Math/pow 3 y)))))
 
 ;;; 2.6
 ;;; consider a system, there's literal number exists (only non-neg)
@@ -76,3 +75,15 @@
     (fn [x] (f ((n f) x)))))
 ;;; please design one and two
 
+(defn one [f]
+  (fn [x] (f x)))
+
+(defn two [f]
+  (fn [x] (f (f x))))
+
+(defn church-plus [right left]
+  (fn [f] (fn [x] 
+           ((right f) ((left f) x)))))
+
+(defn show-fn [x]
+  (println :1))
