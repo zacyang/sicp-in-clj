@@ -34,4 +34,13 @@
 
 ))
 
+(deftest church-int-coverting
+  (testing "covert church to in"
+    (is (= (church->int church-zero) 0))
+    (is (= (church->int one) 1))
+    (is (= (church->int two) 2))
+    (let [church-100 (reduce church-plus (take 100 (repeat one)))]
+      (is (= (church->int church-100) 100)))    
+))
+
 

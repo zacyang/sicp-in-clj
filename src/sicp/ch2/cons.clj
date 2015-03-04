@@ -37,8 +37,7 @@
       (iter (/ x d) (inc result))
       result))
   (if (zero? n) 0
-      (iter n 0))
-)
+      (iter n 0)))
 
 (defn car-multi-regular [z]
   (num-divs z 2))
@@ -65,15 +64,16 @@
           (Math/pow 3 y)))))
 
 ;;; 2.6
+;;; the fllowing presentatation is call Church Number by Alonzo Church
 ;;; consider a system, there's literal number exists (only non-neg)
 ;;; we car def 0 and plus 1 as:
-(defn my-zero [f]
+(defn church-zero [f]
   (fn [x] x))
 
 (defn add-one [n]
   (fn [f] 
     (fn [x] (f ((n f) x)))))
-;;; please design one and two
+;;; please design one and two, YOU CANT USE my-zero and add-one
 
 (defn one [f]
   (fn [x] (f x)))
@@ -87,3 +87,11 @@
 
 (defn show-fn [x]
   (println :1))
+
+;;; 
+;;; 
+;;; ADDTIONAL defn function for converting church->integer and interger->church
+
+(defn church->int [f]
+  ((f (fn [x] (inc x))) 0)
+  )
