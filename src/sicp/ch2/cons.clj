@@ -95,3 +95,7 @@
 (defn church->int [f]
   ((f (fn [x] (inc x))) 0)
   )
+
+(defn int->church [n]
+  (if (zero? n) church-zero
+      (reduce church-plus (take n (repeat one)))))
