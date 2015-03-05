@@ -23,6 +23,10 @@
   (fn [f] (fn [x]
             ((right f) ((left f) x)))))
 
+(defn church-mult [right left]
+  (fn [f] (left (right f)))
+  )
+
 (defn show-fn [x]
   (println :1))
 
@@ -36,4 +40,5 @@
 
 (defn int->church [n]
   (if (zero? n) church-zero
-                (reduce church-plus (take n (repeat one)))))
+      (reduce church-plus (take n (repeat one)))))
+
