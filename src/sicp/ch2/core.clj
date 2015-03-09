@@ -113,9 +113,31 @@
   (loop [t n, src l, ret []]
     (if (zero? t)
       ret
-      (recur ((dec t) (tail src) (conj ret (head src)))))))
+      (recur (dec t) (tail src) (conj ret (head src))))))
+
+(defn nthr [l n]
+  (if (zero? n)
+    (head l)
+    (recur (tail l) (dec n))))
+
+;;; Joy , exmaple of quick sort , using lazy 
+(defn nom [n]
+  (take n (repeatedly (fn [] (rand-int n)))))
 
 
+(defn- sort-parts [work]
+  (lazy-seq
+   (loop [[part & parts] work]
+     (if-let [[pivot & xs] (seq part)]
+       (let [smaller? #(< % pivot)]
+         (recur (list* (filter smaller? xs)
+                       pivot
+                       (remove smaller? xs)
+                       parts)))
+       (when-let [[x & left-parts] parts]
+         (cons x (sort-parts left-parts)))))))
 
+(defn quick-lazy-sort [xs]
+  (sort-parts (list xs)))
 
 
