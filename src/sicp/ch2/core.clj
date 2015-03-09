@@ -91,7 +91,29 @@
 
   )
 
+(defn lz-step [s]
+  (lazy-seq
+   (if (seq s)
+     [(first s) (lz-step (rest s))]
+     [])))
 
+;;; delay version tri
+(defn triangles [n]
+  (/ (* n (+ n 1))
+     2))
+(defn inf-triangles [n]
+  {:head (triangles n)
+   :tail (delay (inf-triangles (inc n)))})
+
+(defn head [t] (:head t))
+
+(defn tail [t] (force (:tail t)))
+
+(defn taker [n l]
+  (loop [t n, src l, ret []]
+    (if (zero? t)
+      ret
+      (recur ((dec t) (tail src) (conj ret (head src)))))))
 
 
 
