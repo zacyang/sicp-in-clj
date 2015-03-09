@@ -6,4 +6,5 @@
   (testing ""
     (is (= (lower-bound (make-interval 1 2)) 1))
     (is (= (upper-bound (make-interval 1 2)) 2))
+
     ))

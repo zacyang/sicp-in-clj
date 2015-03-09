@@ -4,7 +4,7 @@
   (first n)
 )
 (defn upper-bound [n]
-  (rest n)
+  (last n)
   )
 (defn make-interval [x y]
   (list x y))
@@ -20,3 +20,11 @@
         p4 (* (upper-bound x) (upper-bound y))]
     (make-interval (min p1 p2 p3 p4) (max p1 p2 p3 p4))
 ))
+
+(defn add-interval [x y]
+  (make-interval (+ (lower-bound x) (lower-bound y))
+                 (+ (upper-bound x) (upper-bound y))))
+
+(defn sub-interval [x y]
+  (make-interval (- (lower-bound x) (lower-bound y))
+                 (- (upper-bound x) (upper-bound y))))
