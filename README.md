@@ -1,10 +1,12 @@
 # sicp-in-clj
 
-A Clojure library designed to ... well, that part is up to you.
+Implementation of all SICP eamples and excises in clojure.
 
 ## Usage
+lein test
 
-FIXME
+##TODO
+* church number - * / operations
 
 ## License
 

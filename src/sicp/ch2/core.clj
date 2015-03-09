@@ -122,7 +122,7 @@
 
 ;;; Joy , exmaple of quick sort , using lazy 
 (defn nom [n]
-  (take n (repeatedly (fn [] (rand-int n)))))
+  (take n (repeatedly #(rand-int n))))
 
 
 (defn- sort-parts [work]

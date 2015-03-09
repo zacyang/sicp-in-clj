@@ -60,3 +60,11 @@
 ;;     )
 ;;   )
 
+
+;;; lay quick sort testing
+(deftest lazy-sort-testing
+  (testing ""
+    (is (=  (quick-lazy-sort '(3 2 1))  [1 2 3]))
+    (is (=  (quick-lazy-sort [3 2 1 5 4]) [1 2 3 4 5]))
+    (is (= (quick-lazy-sort (range 100)) (range 100)))
+    ))
