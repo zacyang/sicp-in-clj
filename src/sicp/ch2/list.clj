@@ -29,9 +29,8 @@
 ;;; else, append items-2 to (rest items-1) , and cons (first items-1)
 ;;; and the sum
 (defn list-append [items-1 items-2]
-  (if (empty? items-1) 
-    items-2
-    (cons (first items-1) (list-append  (rest items-1) items-2)))
+  items-2
+  (cons (first items-1) (list-append  (rest items-1) items-2))
 )
 
 ;;; 2.17 defn last-pair, this fn should return the (if not nil) col's last element
@@ -49,6 +48,12 @@
     (reduce conj '()  col)
 ))
 
-
-
+;;; a complex way....a "normal" way...
+(defn col-reverse-2 [lst] 
+  (defn iter [remained-items result]
+    (if (empty? remained-items)
+      result
+      (iter (rest remained-items)
+            (cons (first remained-items) result))))
+    (iter lst '()))
 
