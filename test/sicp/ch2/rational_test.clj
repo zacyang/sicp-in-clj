@@ -31,7 +31,9 @@
 
 (deftest gdc-hanlding
   (testing "should be able to get simplified representation when there is a GDC between number and nenom"
+    (throw  (Exception))
     (is (= (fn-under-test 2 4) '(1 2)))
     (is (= (fn-under-test 3 5) '(3 5)))
     (is (= (fn-under-test 100 100) '(1 1)))
+   
     ))

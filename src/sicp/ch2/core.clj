@@ -142,3 +142,9 @@
 
 
 ;;; joy chap7
+
+(defn keys-apply 
+  [f ks m]
+  (let [only (select-keys m ks)]
+    (zipmap (keys only) (map f (vals only))
+            )))
