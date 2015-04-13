@@ -35,4 +35,10 @@
   [proc col]
   (if (not-empty col)
     (do (proc (first col))
-        (proc (for-each proc (rest col)))))
+        (proc (for-each proc (rest col))))))
+
+(defn count-leaves 
+  [x]
+  (if (empty?  x) 
+    1
+    (inc (count-leaves (rest x)))))
