@@ -37,8 +37,16 @@
     (do (proc (first col))
         (proc (for-each proc (rest col))))))
 
+
 (defn count-leaves 
   [x]
   (if (empty?  x) 
     1
     (inc (count-leaves (rest x)))))
+
+(defn count-leaves-cp
+  [x]
+  (cond (empty?  x)  1
+        (nil? x)     0
+        :else (+ (count-leaves (first x))
+                 (count-leaves (rest x)))))

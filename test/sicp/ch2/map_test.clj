@@ -12,4 +12,9 @@
 (deftest tree-opts-test
   (testing "should return leaves count"
     (def test-tree (list (list 1 2) (list 3 4)))
-    (is (count-leaves test-tree) 4)))
+    (is (count-leaves test-tree) 4)
+    (is (count-leaves  (list test-tree test-tree)) 8)
+    
+    (is (count-leaves-cp test-tree) 4)
+    (is (count-leaves-cp  (list test-tree test-tree)) 8)
+))

@@ -159,6 +159,6 @@
 
 (defn plus-something
   [a b]
-  {:pre [(not zero? a)]}
+  {:pre [( zero? a)]}
   a
 )
