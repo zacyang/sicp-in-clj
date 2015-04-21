@@ -18,3 +18,7 @@
     (is (count-leaves-cp test-tree) 4)
     (is (count-leaves-cp  (list test-tree test-tree)) 8)
 ))
+
+(deftest tree-square-test
+  (testing "basic test"
+    (is (square-tree '(1)) '(1))))

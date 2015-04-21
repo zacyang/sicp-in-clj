@@ -50,3 +50,10 @@
         (nil? x)     0
         :else (+ (count-leaves (first x))
                  (count-leaves (rest x)))))
+
+(defn square-tree [col]
+  (cond (empty? col) col
+        (not (coll? (first col))) (cons (#(* % %) (first col))
+                                        (square-tree (rest col)))
+        :else (cons  (square-tree (first col))
+                     (square-tree (last col)))))
