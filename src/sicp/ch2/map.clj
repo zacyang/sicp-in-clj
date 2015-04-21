@@ -56,4 +56,4 @@
         (not (coll? (first col))) (cons (#(* % %) (first col))
                                         (square-tree (rest col)))
         :else (cons  (square-tree (first col))
-                     (square-tree (last col)))))
+                     (square-tree (rest col)))))

@@ -21,4 +21,7 @@
 
 (deftest tree-square-test
   (testing "basic test"
-    (is (square-tree '(1)) '(1))))
+    (is (square-tree '(1)) '(1))
+    (is (square-tree '(1 (2 3))) '(1 (4 9)))
+    (is (square-tree '(2 (3 4) 5 (6 7))) '(1 (4 (9 16) (36 49))))
+))
