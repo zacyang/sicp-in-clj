@@ -40,16 +40,11 @@
 
 (defn count-leaves 
   [x]
-  (if (empty?  x) 
-    1
-    (inc (count-leaves (rest x)))))
+  (cond (and (coll? x) (empty?  x)) 0
+        (not (coll? x))  1
+        :else(+ (count-leaves (first x))
+                (count-leaves (rest x)))))
 
-(defn count-leaves-cp
-  [x]
-  (cond (empty?  x)  1
-        (nil? x)     0
-        :else (+ (count-leaves (first x))
-                 (count-leaves (rest x)))))
 
 (defn square-tree [col]
   (cond (empty? col) col
@@ -57,3 +52,10 @@
                                         (square-tree (rest col)))
         :else (cons  (square-tree (first col))
                      (square-tree (rest col)))))
+
+(defn square-tree-v2 [col]
+  (defn tree-square-walk [col]
+    (if (and (coll? col) (nil? col))
+      (square-tree-v2 col)
+      (#(* % %) col)))
+  (map tree-square-walk col))
