@@ -11,5 +11,22 @@
 
 (fact "3.2 invoke inner counter"
       (let [fn-under-test (make-monitored square)]
+        (fn-under-test 10) => 100        
         (fn-under-test 10) => 100
-        (fn-under-test :how-many-calls?) => 1))
+        (fn-under-test :how-many-calls?) => 2))
+
+(fact "book code testing"
+      (let [fn-under-test (make-withdraw 100)]
+        (fact (fn-under-test 90) => 10)
+        (fact (fn-under-test 110) => "Insufficient funds")
+        ))
+
+(fact "account testing"
+      (let [fn-under-test (make-account 100)]
+        ((fn-under-test :withdraw) 10) => 90))
+
+
+;; (fact "3.3 account mgr with pwd"
+;;       (let [fn-under-test (make-account 100 "secret-password")]
+;;         (fact (fn-under-test "secret-password" :withdraw) 40 ) => 60)
+;;       (fact (fn-under-test "some-other-password" :withdraw 50) => "Incorrect password"))
