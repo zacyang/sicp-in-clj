@@ -11,5 +11,5 @@
 
 (fact "3.2 invoke inner counter"
       (let [fn-under-test (make-monitored square)]
-        (s 100) => 10
-        (s :how-many-calls?) => 1))
+        (fn-under-test 10) => 100
+        (fn-under-test :how-many-calls?) => 1))
