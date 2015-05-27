@@ -70,8 +70,47 @@
       )))
 
 ;;; 3.3 password check
-(defn with-securty [pwd prog]
-  (fn [entered-pwd prog]
-    (if (= entered-pwd pwd)
-      prog
-      "Incorrect password")))
+(defn make-account-with-security [pwd balance]
+  (def stored-balance (atom balance))
+  (defn withdraw [amount]
+    (if (>= balance amount)
+      (swap! stored-balance #(- % amount))
+      "Insufficient funds"
+      ))
+  (defn deposit [amount]
+      (swap! stored-balance #(+ % amount)))
+  (defn unsupport [_]
+    "unsupported opration!")
+  
+  (fn [entered-pwd opration] 
+    (cond 
+      (not=  pwd entered-pwd) (fn [_] "Incorrect password")
+      (= :withdraw opration) withdraw
+      (= :deposit opration) deposit
+          :else (unsupport)
+      )))
+
+(defn make-account-with-try-limit [limit pwd  balance]
+  (def tried-times (atom limit))
+  (def stored-balance (atom balance))
+  (defn withdraw [amount]
+    (if (>= balance amount)
+      (swap! stored-balance #(- % amount))
+      "Insufficient funds"
+      ))
+  (defn deposit [amount]
+      (swap! stored-balance #(+ % amount)))
+  (defn unsupport [_]
+    "unsupported opration!")
+  (defn decrease-tried-times []
+    (swap! tried-times dec))
+
+  (fn [entered-pwd opration] 
+    (cond 
+
+      (not=  pwd entered-pwd) (fn [_] (decrease-tried-times) "Incorrect password")
+      (= :withdraw opration) withdraw
+      (= :deposit opration) deposit
+          :else (unsupport)
+      )) 
+)

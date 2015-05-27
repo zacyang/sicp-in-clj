@@ -26,10 +26,17 @@
         ((fn-under-test :withdraw) 10) => 90
         ))
 
-
 (fact "3.3 account mgr with pwd"
-      (let [fn-under-test (make-account-with-securty 100 "secret-password")]
+      (let [fn-under-test (make-account-with-security "secret-password" 100 )]
         ((fn-under-test "secret-password" :withdraw) 40)  => 60
         ((fn-under-test "invalid-password" :withdraw) 60)  => "Incorrect password"
         
+))
+
+(fact "3.4 account access try limit"
+      (let [fn-under-test (make-account-with-try-limit 3 100)]
+        (fn-under-test :withdraw 10) => 90
+        (fn-under-test :withdraw 10) => 80
+        (fn-under-test :withdraw 10) => 70
+        (fn-under-test :withdraw 10) => "Limit exceeded, policy is informed!"
 ))
