@@ -1,7 +1,7 @@
 (ns sicp.ch3.bankacount
   (:use [midje.sweet]
         [sicp.ch3.bankacount])
-  (:import java.lang.Math))
+  )
 
 (fact "3.1 accumulator impl"
       (let [accumulator (make-accumulator 5)]
@@ -11,5 +11,25 @@
 
 (fact "3.2 invoke inner counter"
       (let [fn-under-test (make-monitored square)]
-        (s 100) => 10
-        (s :how-many-calls?) => 1))
+        (fn-under-test 10) => 100        
+        (fn-under-test 10) => 100
+        (fn-under-test :how-many-calls?) => 2))
+
+(fact "book code testing"
+      (let [fn-under-test (make-withdraw 100)]
+        (fact (fn-under-test 90) => 10)
+        (fact (fn-under-test 110) => "Insufficient funds")
+        ))
+
+(fact "account testing"
+      (let [fn-under-test (make-account 100)]
+        ((fn-under-test :withdraw) 10) => 90
+        ))
+
+
+(fact "3.3 account mgr with pwd"
+      (let [fn-under-test (make-account-with-securty 100 "secret-password")]
+        ((fn-under-test "secret-password" :withdraw) 40)  => 60
+        ((fn-under-test "invalid-password" :withdraw) 60)  => "Incorrect password"
+        
+))

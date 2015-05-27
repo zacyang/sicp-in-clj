@@ -68,3 +68,10 @@
           (= :deposit opration) deposit
           :else (unsupport)
       )))
+
+;;; 3.3 password check
+(defn with-securty [pwd prog]
+  (fn [entered-pwd prog]
+    (if (= entered-pwd pwd)
+      prog
+      "Incorrect password")))
