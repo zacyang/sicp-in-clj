@@ -2,25 +2,24 @@
 
 
 (defn with-security [account pwd]
-  (fn [pwd]
-    (if ((fn password-check [x] (= pwd x)) pwd)
+  (fn [entered-pwd]
+    (if ( = pwd entered-pwd )
       account
-      (fn [_] "Incorrect password")
+      (fn [_] (fn [_] "Incorrect password"))
       ))
   )
 
 (defn with-try-limit [account limit]
-  (def ^:private tried (atom limit))
+  (def tried (atom limit))
 
   (defn limit-check []
-    (swap! tired-times dec)
-    (if (<= @tried-times 0)
-      "Limit exceeded, policy is informed!"
-      ))
+    (println "current count :"  @tried)
+    (swap! tried dec)
+    (>= (deref tried) 0)
+    )
 
-   (fn [limi]
+  (defn inner-fn 
+    ([arg]
     (if (limit-check )
-      account
-      (fn [_] "Incorrect password")
-      ))
-)
+      (account arg)
+      (fn [_]  "Limit exceeded, policy is informed!")))))
