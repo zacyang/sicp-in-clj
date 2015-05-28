@@ -1,7 +1,7 @@
 (ns sicp.ch2.rational
   "sicp chap 2.1")
 
-(defn- gcd "(gcd a b) returns the greatest common divisor of a and b" [a b]
+(defn gcd "(gcd a b) returns the greatest common divisor of a and b" [a b]
   (if (or (not (integer? a)) (not (integer? b)))
     (throw (IllegalArgumentException. "gcd requires two integers"))
     (loop [a (Math/abs a) b (Math/abs b)]

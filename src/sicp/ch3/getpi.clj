@@ -1,5 +1,6 @@
 (ns sicp.ch3.getpi
-  (:require [sicp.ch2.rational :as r :only [gcd]]))
+  (:require [sicp.ch2.rational :as r :only [gcd]])
+)
 
 ;;; examples on the book
 
@@ -57,4 +58,37 @@
   
   ))
 
+(defn- randome-in-range [low high]
+  "get a rand num in a range"
+  (let [r (- high low)]
+    (+ low (rand-int r))))
+
+(defn- pow [x] (Math/pow x 2))
+(defn abs [x] (Math/abs x))
+(defn- if-point-is-in-the-area-of [x y cycle]
+       (<= 
+        (+
+         (pow (- x (cycle :x)))
+         (pow (- y (cycle :y))))
+        (pow (cycle :len))
+        ))
+
+
+
+(defn estimate-inegral [x1 x2 y1 y2 trials]
+  (defn get-cycle-len [](min (abs (- x1 x2)) (abs (- y1 y2))))
+  (defn try-allocate-rand-point-in-area[]
+    (if-point-is-in-the-area-of (randome-in-range x1 x2)  (randome-in-range y1 y2) 
+                                   {:x (/ (- x1 x2) 2)
+                                    :y (/ (- y1 y2) 2)
+                                    :len (get-cycle-len)})
+    )
+
+  (let [hit-rate (monte-carlo trials try-allocate-rand-point-in-area)
+        rectangular-area (+ (pow (- x1 x2)) (pow (- y1 y2)))
+        ]
+    (println "eara :" rectangular-area)
+    (println "hit-rate:" hit-rate)
+    (/ (* rectangular-area hit-rate) (get-cycle-len))
+    ))
 
