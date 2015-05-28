@@ -92,3 +92,12 @@
     (/ (* rectangular-area hit-rate) (get-cycle-len))
     ))
 
+(defn do-stuff [x]
+  (def result (atom 0))
+  (def evaled (atom false))
+  
+  (cond (and (not evaled) (= x 0))
+        (do (swap! evaled (fn [_] true))
+            (swap! result (fn [_] 0))
+            )
+        ))
