@@ -162,3 +162,35 @@
   {:pre [( zero? a)]}
   a
 )
+
+;;; simu sicp 3.22
+
+(defn fn-counter []
+  (def original 1)
+  (fn plus [] (inc original))
+  )
+
+(require '[clojure.zip :as zip])
+(def root-tree (zip/seq-zip '(:root (:1st-left-child ) (:1st-right-child
+))))
+
+(def location (-> root-tree zip/next))
+
+;; (zip/insert-left location :inserted)
+
+;;(zip/insert-right location :inserted)
+;;(zip/insert-child location :inserted)
+
+(zip/remove location)
+
+(defn memoize [f]
+  (let [*table*  (atom'{})]
+    (fn [x] 
+      (if-let [previously-computed-result (*table* x) ]
+        previously-computed-result
+        (let [new-result (f x)]
+          (assoc! *table* )
+          result
+          )
+
+        ))))
