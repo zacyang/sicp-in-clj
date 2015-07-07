@@ -6,7 +6,6 @@
     (swap! tmp 
            #(+ amount % ))))
 
-
 (defn square [x]
   (* x x))
 
@@ -21,10 +20,6 @@
       (increase-counter-and-invok-watched-fn watched-fn args)
       )))
 ;;; following func is from the book, included inorder to complete the question
-(defn make-account [balance]
-  (def stored-balance (atom balance))
-  
-  )
 
 (defn make-withdraw [balance]
   (def stored-balance (atom balance))
@@ -90,27 +85,27 @@
           :else (unsupport)
       )))
 
-(defn make-account-with-try-limit [limit pwd  balance]
-  (def tried-times (atom limit))
-  (def stored-balance (atom balance))
-  (defn withdraw [amount]
-    (if (>= balance amount)
-      (swap! stored-balance #(- % amount))
-      "Insufficient funds"
-      ))
-  (defn deposit [amount]
-      (swap! stored-balance #(+ % amount)))
-  (defn unsupport [_]
-    "unsupported opration!")
-  (defn decrease-tried-times []
-    (swap! tried-times dec))
+ (defn make-account-with-try-limit [limit pwd  balance]
+     (def tried-times (atom limit))
+     (def stored-balance (atom balance))
+     (defn withdraw [amount]
+       (if (>= balance amount)
+         (swap! stored-balance #(- % amount))
+         "Insufficient funds"
+         ))
+     (defn deposit [amount]
+       (swap! stored-balance #(+ % amount)))
+     (defn unsupport [_]
+       "unsupported opration!")
+     (defn decrease-tried-times []
+       (swap! tried-times dec))
 
-  (fn [entered-pwd opration] 
-    (cond 
+     (fn [entered-pwd opration] 
+       (cond 
 
-      (not=  pwd entered-pwd) (fn [_] (decrease-tried-times) "Incorrect password")
-      (= :withdraw opration) withdraw
-      (= :deposit opration) deposit
-          :else (unsupport)
-      )) 
-)
+         (not=  pwd entered-pwd) (fn [_] (decrease-tried-times) "Incorrect password")
+         (= :withdraw opration) withdraw
+         (= :deposit opration) deposit
+         :else (unsupport)
+         )) 
+     )

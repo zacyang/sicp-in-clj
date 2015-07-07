@@ -1,6 +1,7 @@
 (ns sicp.ch3.bankacount_refactored
   (:use [midje.sweet]
-        [sicp.ch3.bankacount_refactored])
+        [sicp.ch3.bankacount_refactored]
+        [sicp.ch3.bankacount :only [make-account]])
   )
 
 (fact "3.3 account mgr with pwd"

@@ -183,14 +183,16 @@
 
 (zip/remove location)
 
-(defn memoize [f]
-  (let [*table*  (atom'{})]
+;;; 3.27 memozie fn
+(defn memoize-shanzai 
+  [f]
+  (let [*table*  (atom {})]
     (fn [x] 
-      (if-let [previously-computed-result (*table* x) ]
+      (if-let [previously-computed-result (@*table* x) ]
         previously-computed-result
         (let [new-result (f x)]
-          (assoc! *table* )
-          result
-          )
+          (swap! *table* assoc x new-result)
+          new-result
+          )))))
 
-        ))))
+

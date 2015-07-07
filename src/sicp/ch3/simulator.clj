@@ -60,11 +60,7 @@
       )))
 
 
-(defn after-delay 
-  [delay action]
-  (add-to-agenda! (+ delay (current-time *the-agenda*)) 
-                  action
-                  *the-agenda*))
+
 
 (def inverter-delay 1)
 
@@ -146,13 +142,13 @@
 
 (defn current-time
   [agenda]
-  (first agenda))
+  (first @agenda))
 
 
 ;;; problem !!!!!!!!!!!!!
 (defn set-current-time! 
   [agenda time]
-  (swap! agenda (fn [x] (list (atom time)))))
+  (swap! agenda (fn [x] (atom (list  time)))))
 
 (defn segments 
   [agenda]
@@ -162,6 +158,10 @@
   [agenda]
   (first (segments agenda)))
 
+(defn set-segments! 
+  [agenda segments]
+  (swap! agenda #((atom (list (current-time) 
+                              segments)))))
 (defn rest-segment
   [agenda]
   (rest (segments agenda)))
@@ -170,23 +170,40 @@
   [agenda]
   (empty? (segments agenda)))
 
-;; (defn add-to-agenda! 
-;;   [time action agenda]
-;;   (defn- belongs-before?
-;;     [segments]
-;;     (or (empty? segments) (< time (segment-time (first segments)))))
-;;   (defn- make-new-time-segment
-;;     [time action]
-;;     (let [q (make-queue)]
-;;       (insert-queue! q action)
-;;       (make-time-segment time q)))
-;;   (defn add-to-segements! 
-;;     [segments]
-;;     ())
+(defn make-queue
+  []
+  (atom '[]))
+
+(defn insert-queue!
+  [queue action]
+  (swap! queue #( (conj queue action))))
+
+(defn add-to-agenda! 
+  [time action agenda]
+  (defn- belongs-before?
+    [segments]
+    (or (empty? segments) (< time (segment-time (first segments)))))
+  (defn- make-new-time-segment
+    [time action]
+    (let [q (make-queue)]
+      (insert-queue! q action)
+      (make-time-segment time q)))
+  (defn add-to-segements! 
+    [segments]
+    (if (= (segment-time (first segments)) time)
+      (insert-queue! (segment-queue (first segments)) action)
+      (let [rest-segments (segments agenda)]
+        (if (belongs-before? segments)
+          (set-segments! agenda 
+                        (cons (make-new-time-segment time action)))
+          (add-to-segements! segments))))))
 
 
-;; )
-
+(defn after-delay 
+  [delay action]
+  (add-to-agenda! (+ delay (current-time *the-agenda*)) 
+                  action
+                  *the-agenda*))
 
 ;;; code on 3.3.4 just convert from scheme to clojure LOL
 
@@ -199,10 +216,14 @@
 ;; (def s (make-wire))
 
 (defn first-agenda-item
-  [agenda])
+  [agenda]
+  
+)
 
 (defn remove-first-agenda-item!
-  [agenda])
+  [agenda]
+  (let [q (segment-queue (first-segment agenda))])
+)
 
 ;;; propagate
 (defn propagate

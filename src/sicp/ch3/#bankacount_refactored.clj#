@@ -1,0 +1,25 @@
+(ns sicp.ch3.bankacount_refactored)
+
+
+(defn with-security [account pwd]
+  (fn [entered-pwd & args]
+    (if ( = pwd entered-pwd )
+      (account (first args)) 
+      (fn [_] "Incorrect password")
+      ))
+  )
+
+(defn with-try-limit [account limit]
+  (def tried (atom limit))
+
+  (defn limit-check []
+    (println "current count :"  @tried)
+    (swap! tried dec)
+    (>= (deref tried) 0)
+    )
+
+  (defn inner-fn 
+    ([& args]
+    (if (limit-check )
+      (account (first args))
+      (fn [_]   "Limit exceeded, policy is informed!")))))

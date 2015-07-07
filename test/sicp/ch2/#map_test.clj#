@@ -1,0 +1,21 @@
+(ns sicp.ch2.map-test
+  (:use [midje.sweet ]
+        [sicp.ch2.map]))
+(fact "basic-my-map-test"
+      (my-map inc [1 2 3]) => [2 3 4])
+
+(fact "square-list-test"
+          (square-list '(1 2 3)) => '(1 4 9))
+
+(fact ""
+      (let [test-tree '((1 2) (3 4))]
+   (count-leaves test-tree) => 4
+   (count-leaves (list test-tree test-tree) => 8)))
+
+
+(fact "tree-square-test"
+      (square-tree '(1) => '(1))
+      (square-tree '(1 (2 3))) => '(1 (4 9))
+      (square-tree '(2 (3 4) 5 (6 7))) '(1 (4 (9 16) (36 49))))
+
+
