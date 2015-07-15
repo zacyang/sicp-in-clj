@@ -1,31 +1,95 @@
 (ns sicp.ch3.stream
   "since we are going impl our own version of force and delay"
-  (:refer-clojure :exclude [force delay]))
-
+  (:refer-clojure :excludes [force delay])
+)
+;; reason for failure, this need to be a macro , parameter should not be eval
 (defn memo-proc 
   [proc]
   (let [*already-run*? (atom false)
         *result* (atom false)]
-    (println "define=>" *already-run*?)
     (fn [] 
-
       (if-not @*already-run*?
-               (do
-                 (println "here")
-                 (swap! *result* (fn [_] (proc)))
-                 (swap! *already-run*? (fn [_] true))
-                 *result*)
-               *result*))))
+        (do
+          (println "memo-proc->  " proc)
+          (swap! *result* (fn [_] (proc)))
+          (swap! *already-run*? (fn [_] true))
+          @*result*)
+        @*result*))))
 
 
-(defn delay
+(defn delay-eval
   [proc]
-  (memo-proc proc)
-  )
+  (memo-proc proc))
 
-(defn force 
+
+(defn force-eval
   [delay]
-  (delay)
-)
+  (delay))
 
-;;; mem version of delay
+;;; construct a stream
+
+;;; defs 
+;;; given any stream , matches (stream-car (cons-stream x y) ) => x
+;;; and (stream-cdr (cons-stream x y)) => y
+
+
+(defn cons-stream 
+  [x f]
+  (list x (delay-eval f)))
+
+(defn stream-car 
+  [stream]
+  (first stream))
+
+;;(def ^:private the-empty-stream  (fn [] :the-empty-stream))
+(def ^:private the-empty-stream  (cons-stream :the-empty-stream (fn [] :the-empty-stream)))
+
+(defn stream-null?
+  [stream]
+  (= :the-empty-stream (stream-car stream)))
+
+(defn stream-cdr
+  [stream]
+  (if (stream-null? stream) (do (println "stream-cdr =>" stream) stream)
+      (do (println "else stream-cdr => " stream) (force-eval  (last stream)))))
+
+(defn stream-ref 
+  [stream n]
+  (if (zero? n)
+    (stream-car stream)
+    (stream-ref (stream-cdr stream) (dec n))))
+
+
+
+(defn stream-map
+  [proc stream]
+  (if (stream-null? stream)
+    the-empty-stream
+    (cons-stream (proc (stream-car stream))
+                 (stream-map proc (stream-cdr stream)))))
+
+(defn stream-filter
+  [pred stream]
+  (cond (stream-null? stream) the-empty-stream
+        (pred (stream-car stream))
+        (cons-stream (stream-car stream) (fn [] (stream-filter pred (stream-cdr stream))))
+        :else (stream-filter pred (stream-cdr stream))))
+;;; book example
+(defn dived-by-3?
+  [x]
+  (println "pre-> " x)
+  (zero? (mod x 3)))
+
+(defn stream-enumerate-interval
+  [low high]
+  (if (> low high)
+    (do (println "the-empty-stream")
+        the-empty-stream)
+    (do (println "low" low)
+        (cons-stream low (fn [] (stream-enumerate-interval (inc low) high))))))
+
+
+
+
+
+
