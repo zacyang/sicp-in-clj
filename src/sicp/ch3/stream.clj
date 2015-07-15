@@ -10,7 +10,6 @@
     (fn [] 
       (if-not @*already-run*?
         (do
-          (println "memo-proc->  " proc)
           (swap! *result* (fn [_] (proc)))
           (swap! *already-run*? (fn [_] true))
           @*result*)
@@ -77,7 +76,6 @@
 ;;; book example
 (defn dived-by-3?
   [x]
-  (println "pre-> " x)
   (zero? (mod x 3)))
 
 (defn stream-enumerate-interval
