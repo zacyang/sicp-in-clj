@@ -12,9 +12,17 @@
 
 
 (fact "stream filter, quick test"
-      (let [test-stream (stream-enumerate-interval 0 1 )]
-        (first  (stream-filter zero? test-stream)) => 0
-))
+      (let [test-stream (stream-enumerate-interval 0 100000000 )]
+        (stream-car  (stream-filter #(> %1 3) test-stream)) => 4
+        (stream-car  (stream-cdr  (stream-filter #(> %1 3) test-stream))) => 5
+
+        (->   (stream-filter #(> %1 3) test-stream)
+              stream-cdr
+              stream-cdr
+              stream-cdr
+              stream-car)
+        => 7))
+
 
 
 

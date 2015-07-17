@@ -31,6 +31,11 @@
 ;;; given any stream , matches (stream-car (cons-stream x y) ) => x
 ;;; and (stream-cdr (cons-stream x y)) => y
 
+(defmacro cons-proc-macro 
+  "sytacs macro makes user have no aware of the fn wrap"
+  [ proc]
+  `(fn [] (~@proc))
+  )
 
 (defn cons-stream 
   [x f]
@@ -49,8 +54,8 @@
 
 (defn stream-cdr
   [stream]
-  (if (stream-null? stream) (do (println "stream-cdr =>" stream) stream)
-      (do (println "else stream-cdr => " stream) (force-eval  (last stream)))))
+  (if (stream-null? stream)  stream
+      (force-eval  (last stream))))
 
 (defn stream-ref 
   [stream n]
@@ -81,10 +86,8 @@
 (defn stream-enumerate-interval
   [low high]
   (if (> low high)
-    (do (println "the-empty-stream")
-        the-empty-stream)
-    (do (println "low" low)
-        (cons-stream low (fn [] (stream-enumerate-interval (inc low) high))))))
+        the-empty-stream
+        (cons-stream low (fn [] (stream-enumerate-interval (inc low) high)))))
 
 
 
