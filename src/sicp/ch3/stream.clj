@@ -64,13 +64,19 @@
     (stream-ref (stream-cdr stream) (dec n))))
 
 
+(defn stream-for-each
+  [proc stream]
+  (if (stream-null? stream )
+    stream
+    (do (proc (stream-car stream))
+        (stream-for-each (proc (stream-cdr stream))))))
 
 (defn stream-map
   [proc stream]
   (if (stream-null? stream)
     the-empty-stream
     (cons-stream (proc (stream-car stream))
-                 (stream-map proc (stream-cdr stream)))))
+                 (fn []  (stream-map proc (stream-cdr stream))))))
 
 (defn stream-filter
   [pred stream]
@@ -78,6 +84,7 @@
         (pred (stream-car stream))
         (cons-stream (stream-car stream) (fn [] (stream-filter pred (stream-cdr stream))))
         :else (stream-filter pred (stream-cdr stream))))
+
 ;;; book example
 (defn dived-by-3?
   [x]
@@ -88,6 +95,13 @@
   (if (> low high)
         the-empty-stream
         (cons-stream low (fn [] (stream-enumerate-interval (inc low) high)))))
+
+
+(defn integers-starting-from 
+  [n]
+  (cons-stream n (fn [] (integers-starting-from (inc n)))))
+
+(def integers (integers-starting-from 1))
 
 
 

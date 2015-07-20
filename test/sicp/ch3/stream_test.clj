@@ -23,7 +23,11 @@
               stream-car)
         => 7))
 
-
+(fact "stream map, should also returns a lazy seq"
+      (let [test-stream (stream-enumerate-interval 0 100000000 )
+            *counter* (atom 0)]
+                  (stream-car (stream-map (fn [_] (swap! *counter* inc)) (test-stream))) => 0
+        ))
 
 
 
