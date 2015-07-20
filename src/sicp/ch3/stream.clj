@@ -37,6 +37,12 @@
   `(fn [] (~@proc))
   )
 
+(defmacro cons-stream-macro 
+  "sytacs macro makes user have no aware of the fn wrap"
+  [x proc]
+  `(list ~x (fn [] (~@proc))))
+
+
 (defn cons-stream 
   [x f]
   (list x (delay-eval f)))
