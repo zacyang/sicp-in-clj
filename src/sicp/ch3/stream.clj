@@ -117,12 +117,28 @@
   [stream]
   (cons-stream
    (stream-car stream)
-   (fn [s]
+   (fn []
      (sieve (stream-filter 
-             #(not (divisible? %1 (stream-car s)))
-             (stream-cdr s))))))
+             #(not (divisible? %1 (stream-car stream)))
+             (stream-cdr stream))))))
 
 (def primes (sieve (integers-starting-from 2)))
+
+;;def integer in manner of church number
+
+(def ONES (cons-stream 1 ONES))
+
+(defn stream-maps 
+  [proc & streams]
+  (if (stream-null? (first streams))
+    the-empty-stream
+    (cons-stream
+     (apply proc (map stream-car streams))
+     (fn [] (apply stream-maps (cons proc (map stream-cdr streams)))))))
+
+(defn add-stream 
+  [s1 s2]
+  (stream-map + s1 s2))
 
 
 
