@@ -126,7 +126,7 @@
 
 ;;def integer in manner of church number
 
-(def ONES (cons-stream 1 ONES))
+(def ONES (cons-stream 1 (fn [] ONES)))
 
 (defn stream-maps 
   [proc & streams]
@@ -138,8 +138,45 @@
 
 (defn add-stream 
   [s1 s2]
-  (stream-map + s1 s2))
+  (stream-maps + s1 s2))
+
+(def integers
+  (cons-stream ONES (add-stream ONES integers)))
+
+;;this wont work, since no delay
+;; (def fibs
+;;   (cons-stream 0
+;;                (cons-stream 1
+;;                             (add-stream (stream-cdr fibs)
+;;                                         fibs))))
+
+(def fibs
+  (cons-stream 0
+               (fn []
+                 (cons-stream 1
+                              (fn [] (add-stream (stream-cdr fibs)
+                                                fibs))))))
+
+(defn a [b]
+  1)
 
 
+(defn- square
+  [n]
+  (* n n))
 
+;;seems we cant do this in clojure recur def 
+
+;; (def primes-of-stream-concat
+;;   (cons-stream 2
+;;                (fn [] (stream-filter  prime? (integers-starting-from 3)))))
+
+;; (defn prime? 
+;;   [n]
+;;   (defn- iter
+;;     [ps]
+;;     (cond ((> (square (stream-car ps)) n)) true
+;;           ((divisible? n (stream-car ps))) false
+;;           :else (iter (stream-cdr ps))))
+;;   (fn [] (iter primes-of-stream-concat)))
 

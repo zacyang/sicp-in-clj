@@ -23,7 +23,27 @@
                  stream-car)
            => 7))
 
+(fact "primes as stream"
+      (stream-ref primes 50) => 233)
 
+(fact "stream maps basic tests"
+      (let [s1 (stream-enumerate-interval 1 1)
+            s2 (stream-enumerate-interval 2 2)]
+        (stream-car (stream-maps + s1 s2)) => 3)
+
+      (let [s1 (stream-enumerate-interval 1000 100000 )
+            s2 (stream-enumerate-interval 1 100000)]
+        (stream-car (stream-maps + s1 s2)) => 1001)
+
+      (let [s1 (stream-enumerate-interval 1000 100000 )
+            s2 (stream-enumerate-interval 2 100000)]
+        (stream-ref (stream-maps + s1 s2) 10) => 1022)
+
+  (let [s1 (stream-enumerate-interval 1000 100000 )
+            s2 (stream-enumerate-interval 2 100000)]
+        (stream-ref (add-stream s1 s2) 10) => 1022)
+
+)
 ;; (fact "stream map, should also returns a lazy seq"
 ;;       (let [test-stream (stream-enumerate-interval 0 100000000 )
 ;;             *counter* (atom 0)
@@ -35,7 +55,3 @@
 ;;           )
         
 ;;         ))
-
-
-
-      
