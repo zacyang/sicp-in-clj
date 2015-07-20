@@ -109,7 +109,20 @@
 
 (def integers (integers-starting-from 1))
 
+(defn- divisible? 
+  [x y]
+  (zero? (mod x y)))
 
+(defn sieve 
+  [stream]
+  (cons-stream
+   (stream-car stream)
+   (fn [s]
+     (sieve (stream-filter 
+             #(not (divisible? %1 (stream-car s)))
+             (stream-cdr s))))))
+
+(def primes (sieve (integers-starting-from 2)))
 
 
 
