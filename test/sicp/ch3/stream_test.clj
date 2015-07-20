@@ -42,16 +42,15 @@
   (let [s1 (stream-enumerate-interval 1000 100000 )
             s2 (stream-enumerate-interval 2 100000)]
         (stream-ref (add-stream s1 s2) 10) => 1022)
-
 )
-;; (fact "stream map, should also returns a lazy seq"
-;;       (let [test-stream (stream-enumerate-interval 0 100000000 )
-;;             *counter* (atom 0)
-;;             ;; x (stream-map (fn [_] (swap! *counter* inc)) (test-stream))
-            
-;;             ]
-;;         (let  [_ (stream-map (fn [_] (swap! *counter* inc)) (test-stream))]
-;;           @*counter* => 1
-;;           )
-        
-;;         ))
+
+(fact "fib in stream manner"
+      (stream-ref fibs 1) => 1)
+
+(fact "stream map, should also returns a lazy seq"
+      (let [test-stream (stream-enumerate-interval 0 100000000 )
+            *counter* (atom 0)
+            _ (stream-map (fn [_] (swap! *counter* inc)) test-stream)]
+
+        @*counter* => 1))
+
