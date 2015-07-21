@@ -199,5 +199,26 @@
   [stream]
   (if (stream-null? stream) stream
       (cons-stream (stream-car stream)
-                   (fn [] (add-stream stream 
+                   (fn [] (add-stream (stream-cdr stream) 
                                      (partial-sums stream))))))
+
+
+(defn merge-stream 
+  [s1 s2]
+  (cond (stream-null? s1) s2
+        (stream-null? s2) s1
+        :else (let [s1car (stream-car s1)
+                    s2car (stream-car s2)]
+                (cond (< s1car s2car) 
+                      (cons-stream s1car (fn [] (merge-stream (stream-cdr s1) s2)))
+                      
+                      (> s1car s2car) 
+                      (cons-stream s2car (fn [] (merge-stream s1 (stream-cdr s2))))
+                      
+                      :else (cons-stream s1car (fn [] (merge-stream (stream-cdr s1) (stream-cdr s2))))))))
+
+(def S (cons-stream 1 
+                    (fn []
+                      (merge-stream (scale-stream S 2)
+                                    (merge-stream (scale-stream S 3)
+                                                  (scale-stream S 5))))))
