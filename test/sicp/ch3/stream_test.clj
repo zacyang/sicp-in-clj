@@ -54,3 +54,17 @@
 
         @*counter* => 1))
 
+(fact "3.54 def mul-streams and factorials"
+      (let [ test-stream (mul-stream integers integers)]
+        (stream-car test-stream) => 1
+        (stream-ref test-stream 2 ) => 9
+        (stream-ref test-stream 3 ) => 16
+        (stream-ref test-stream 10 ) => 121)
+      
+      (stream-car factorials) => 1
+      (stream-ref factorials 0) => 1
+      (stream-ref factorials 1) => 2
+      (stream-ref factorials 2) => 6
+      (stream-ref factorials 3) => 24
+      (stream-ref factorials 4) => 120
+)

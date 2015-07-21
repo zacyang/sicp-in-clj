@@ -167,7 +167,8 @@
 
 ;;seems we cant do this in clojure recur def 
 
-;; (def primes-of-stream-concat
+;; (defn primes-of-stream-concat
+;;   []
 ;;   (cons-stream 2
 ;;                (fn [] (stream-filter  prime? (integers-starting-from 3)))))
 
@@ -175,8 +176,16 @@
 ;;   [n]
 ;;   (defn- iter
 ;;     [ps]
-;;     (cond ((> (square (stream-car ps)) n)) true
+;;     (cond ((< (square (stream-car ps)) n)) true
 ;;           ((divisible? n (stream-car ps))) false
 ;;           :else (iter (stream-cdr ps))))
+  
 ;;   (fn [] (iter primes-of-stream-concat)))
+
+(defn mul-stream
+  [s1 s2]
+  (if (stream-null? s1) s2
+      (cons-stream (* (stream-car s1) (stream-car s2))
+                   (* (stream-cdr s1) (stream-cdr s2)))))
+
 
