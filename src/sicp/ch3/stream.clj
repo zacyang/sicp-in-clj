@@ -125,8 +125,14 @@
 (def primes (sieve (integers-starting-from 2)))
 
 ;;def integer in manner of church number
+(defn add-stream 
+  [s1 s2]
+  (stream-maps + s1 s2))
 
 (def ONES (cons-stream 1 (fn [] ONES)))
+
+(def integers
+  (cons-stream 1 (fn [] (add-stream ONES integers))))
 
 (defn stream-maps 
   [proc & streams]
@@ -136,12 +142,9 @@
      (apply proc (map stream-car streams))
      (fn [] (apply stream-maps (cons proc (map stream-cdr streams)))))))
 
-(defn add-stream 
-  [s1 s2]
-  (stream-maps + s1 s2))
 
-(def integers
-  (cons-stream ONES (add-stream ONES integers)))
+
+
 
 ;;this wont work, since no delay
 ;; (def fibs
@@ -184,8 +187,17 @@
 
 (defn mul-stream
   [s1 s2]
-  (if (stream-null? s1) s2
-      (cons-stream (* (stream-car s1) (stream-car s2))
-                   (* (stream-cdr s1) (stream-cdr s2)))))
+  (stream-maps * s1 s2))
+
+(def factorials
+  (cons-stream 1
+               (fn [] (mul-stream factorials
+                                 (stream-cdr integers)))))
 
 
+(defn partial-sums
+  [stream]
+  (if (stream-null? stream) stream
+      (cons-stream (stream-car stream)
+                   (fn [] (add-stream stream 
+                                     (partial-sums stream))))))
