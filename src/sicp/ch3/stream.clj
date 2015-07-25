@@ -222,3 +222,7 @@
                       (merge-stream (scale-stream S 2)
                                     (merge-stream (scale-stream S 3)
                                                   (scale-stream S 5))))))
+
+(defn integrate-series
+  [s1 s2]
+  (stream-map / s1 s2))
