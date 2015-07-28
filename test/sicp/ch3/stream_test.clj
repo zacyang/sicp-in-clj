@@ -68,3 +68,9 @@
       (stream-ref factorials 3) => 24
       (stream-ref factorials 4) => 120
 )
+
+(fact "book example, sqrt as a stream"
+      (let [test-stream (sqrt-stream 2)]
+        (> 1.42  (stream-ref test-stream 10)) => true 
+        (stream-ref test-stream 1000) => 1.414213562373095
+))

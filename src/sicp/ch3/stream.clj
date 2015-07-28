@@ -216,3 +216,17 @@
 (defn integrate-series
   [s1 s2]
   (stream-map / s1 s2))
+
+(defn sqrt-stream
+  [x]
+  (defn- average
+    [x y]
+    (/ (+ x y) 2))
+  (defn- sqrt-improve 
+    [guess x]
+    (average 2 guess (/ x guess)))
+  (defn- guesses
+    []
+    (cons-stream 1.0 (stream-map (fn [guess] (sqrt-improve guess x))
+                                 guesses)))
+  (guesses))
