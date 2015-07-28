@@ -72,5 +72,11 @@
 (fact "book example, sqrt as a stream"
       (let [test-stream (sqrt-stream 2)]
         (> 1.42  (stream-ref test-stream 10)) => true 
-        (stream-ref test-stream 1000) => 1.414213562373095
+        (stream-ref test-stream 100) => 1.414213562373095
 ))
+
+(fact "book example, pi as stream"
+      (stream-ref pi-stream 100) => 3.1514934010709914
+      (stream-ref (euler-transform pi-stream) 10 ) =>  3.1417360992606667
+      (stream-ref (accelerated-sequence euler-transform pi-stream) 10) => 3.14
+)

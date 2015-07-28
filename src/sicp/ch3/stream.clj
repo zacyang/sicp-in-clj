@@ -3,11 +3,19 @@
   (:refer-clojure :excludes [force delay])
 )
 ;; reason for failure, this need to be a macro , parameter should not be eval
+(def ^:private hit (atom 0))
+(def ^:private not-hit (atom 0))
+
+(defn- log-hit-rate [pred]
+      (cond pred  (swap! not-hit inc)
+            :else (swap! hit inc)))
+
 (defn memo-proc 
   [proc]
   (let [*already-run*? (atom false)
         *result* (atom false)]
-    (fn [] 
+    (fn []
+     ;; (log-hit-rate @*already-run*?)
       (if-not @*already-run*?
         (do
           (swap! *result* (fn [_] (proc)))
@@ -217,16 +225,64 @@
   [s1 s2]
   (stream-map / s1 s2))
 
-(defn sqrt-stream
-  [x]
-  (defn- average
-    [x y]
-    (/ (+ x y) 2))
-  (defn- sqrt-improve 
-    [guess x]
-    (average 2 guess (/ x guess)))
-  (defn- guesses
-    []
-    (cons-stream 1.0 (stream-map (fn [guess] (sqrt-improve guess x))
-                                 guesses)))
-  (guesses))
+(def sqrt-stream
+  (fn
+    [x]
+    (defn- average
+      [x y]
+      (/ (+ x y) 2))
+    (defn- sqrt-improve 
+      [guess x]
+      (average guess (/ x guess)))
+    (defn- guesses
+      []
+      (cons-stream 1.0 (stream-map (fn [guess] (sqrt-improve guess x))
+                                   (guesses))))
+  (guesses)))
+
+
+(defn pi-summands
+  [n]
+  (cons-stream (/ 1.0 n)
+               (stream-map - (pi-summands (+ n 2)))))
+
+(def pi-stream 
+  (scale-stream (partial-sums (pi-summands 1)) 
+                4))
+
+
+(defn euler-transform
+  "accucelorator of computing a value. e.g pi"
+  [stream]
+  (let [s0 (stream-ref stream 0)
+        s1 (stream-ref stream 1)
+        s2 (stream-ref stream 2)]
+    (cons-stream (- s2 (/ (square (- s2 s1))
+                          (+ s0 (* -2 s1) s2)))
+                 (euler-transform (stream-cdr stream)))))
+
+
+(defn make-tableau
+  [transform stream]
+  (cons-stream stream 
+               (make-tableau transform (transform stream))))
+
+(defn accelerated-sequence 
+  [tranform stream]
+  (stream-map stream-car (make-tableau tranform stream)))
+
+(defn stream-limit
+  [stream tolerance]
+  (println "-------------->" stream-ref stream 0)
+  (if  (> tolerance 
+          (#(Math/abs %) 
+           (- (stream-ref stream 0)
+              (stream-ref stream 1)))
+          )
+    (stream-ref stream 0)
+    (stream-limit (stream-ref stream 2) tolerance)
+    ))
+
+(defn sqrt-by-stream 
+  [x tolerance]
+  (stream-limit (sqrt-stream x) tolerance))
