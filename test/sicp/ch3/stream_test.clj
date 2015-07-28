@@ -4,7 +4,7 @@
         [clojure.test]))
 
 (fact "stream basic data structure test"
-      (let [test-stream (cons-stream 1 (fn [] 2))]
+      (let [test-stream (cons-stream 1  2)]
       (-> test-stream stream-car) => 1
       (-> test-stream stream-cdr) => 2
       (-> test-stream stream-null?) => false
@@ -39,7 +39,7 @@
             s2 (stream-enumerate-interval 2 100000)]
         (stream-ref (stream-maps + s1 s2) 10) => 1022)
 
-  (let [s1 (stream-enumerate-interval 1000 100000 )
+      (let [s1 (stream-enumerate-interval 1000 100000 )
             s2 (stream-enumerate-interval 2 100000)]
         (stream-ref (add-stream s1 s2) 10) => 1022)
 )

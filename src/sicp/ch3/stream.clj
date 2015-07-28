@@ -31,21 +31,22 @@
 ;;; given any stream , matches (stream-car (cons-stream x y) ) => x
 ;;; and (stream-cdr (cons-stream x y)) => y
 
-(defmacro cons-proc-macro 
-  "sytacs macro makes user have no aware of the fn wrap"
-  [ proc]
-  `(fn [] (~@proc))
-  )
+;; (defmacro cons-proc-macro 
+;;   "sytacs macro makes user have no aware of the fn wrap"
+;;   [element proc]
+;;   `(list ~element
+;;          (delay-eval (fn [] (~@proc))))
+;;   )
 
-(defmacro cons-stream-macro 
+(defmacro cons-stream
   "sytacs macro makes user have no aware of the fn wrap"
   [x proc]
-  `(list ~x (fn [] (~@proc))))
+  `(list ~x (fn [] ~proc)))
 
 
-(defn cons-stream 
-  [x f]
-  (list x (delay-eval f)))
+;; (defn cons-stream 
+;;   [x f]
+;;   (list x (delay-eval f)))
 
 (defn stream-car 
   [stream]
@@ -82,13 +83,13 @@
   (if (stream-null? stream)
     the-empty-stream
     (cons-stream (proc (stream-car stream))
-                 (fn []  (stream-map proc (stream-cdr stream))))))
+                 (stream-map proc (stream-cdr stream)))))
 
 (defn stream-filter
   [pred stream]
   (cond (stream-null? stream) the-empty-stream
         (pred (stream-car stream))
-        (cons-stream (stream-car stream) (fn [] (stream-filter pred (stream-cdr stream))))
+        (cons-stream (stream-car stream)  (stream-filter pred (stream-cdr stream)))
         :else (stream-filter pred (stream-cdr stream))))
 
 ;;; book example
@@ -100,12 +101,12 @@
   [low high]
   (if (> low high)
         the-empty-stream
-        (cons-stream low (fn [] (stream-enumerate-interval (inc low) high)))))
+        (cons-stream low (stream-enumerate-interval (inc low) high))))
 
 
 (defn integers-starting-from 
   [n]
-  (cons-stream n (fn [] (integers-starting-from (inc n)))))
+  (cons-stream n  (integers-starting-from (inc n))))
 
 (def integers (integers-starting-from 1))
 
@@ -117,10 +118,9 @@
   [stream]
   (cons-stream
    (stream-car stream)
-   (fn []
-     (sieve (stream-filter 
-             #(not (divisible? %1 (stream-car stream)))
-             (stream-cdr stream))))))
+   (sieve (stream-filter 
+           #(not (divisible? %1 (stream-car stream)))
+           (stream-cdr stream)))))
 
 (def primes (sieve (integers-starting-from 2)))
 
@@ -129,10 +129,10 @@
   [s1 s2]
   (stream-maps + s1 s2))
 
-(def ONES (cons-stream 1 (fn [] ONES)))
+(def ONES (cons-stream 1 ONES))
 
 (def integers
-  (cons-stream 1 (fn [] (add-stream ONES integers))))
+  (cons-stream 1 (add-stream ONES integers)))
 
 (defn stream-maps 
   [proc & streams]
@@ -140,11 +140,7 @@
     the-empty-stream
     (cons-stream
      (apply proc (map stream-car streams))
-     (fn [] (apply stream-maps (cons proc (map stream-cdr streams)))))))
-
-
-
-
+     (apply stream-maps (cons proc (map stream-cdr streams))))))
 
 ;;this wont work, since no delay
 ;; (def fibs
@@ -155,14 +151,9 @@
 
 (def fibs
   (cons-stream 0
-               (fn []
-                 (cons-stream 1
-                              (fn [] (add-stream (stream-cdr fibs)
-                                                fibs))))))
-
-(defn a [b]
-  1)
-
+               (cons-stream 1
+                            (add-stream (stream-cdr fibs)
+                                        fibs))))
 
 (defn- square
   [n]
@@ -191,16 +182,16 @@
 
 (def factorials
   (cons-stream 1
-               (fn [] (mul-stream factorials
-                                 (stream-cdr integers)))))
+               (mul-stream factorials
+                           (stream-cdr integers))))
 
 
 (defn partial-sums
   [stream]
   (if (stream-null? stream) stream
       (cons-stream (stream-car stream)
-                   (fn [] (add-stream (stream-cdr stream) 
-                                     (partial-sums stream))))))
+                   (add-stream (stream-cdr stream) 
+                               (partial-sums stream)))))
 
 
 (defn merge-stream 
@@ -210,18 +201,17 @@
         :else (let [s1car (stream-car s1)
                     s2car (stream-car s2)]
                 (cond (< s1car s2car) 
-                      (cons-stream s1car (fn [] (merge-stream (stream-cdr s1) s2)))
+                      (cons-stream s1car  (merge-stream (stream-cdr s1) s2))
                       
                       (> s1car s2car) 
-                      (cons-stream s2car (fn [] (merge-stream s1 (stream-cdr s2))))
+                      (cons-stream s2car (merge-stream s1 (stream-cdr s2)))
                       
-                      :else (cons-stream s1car (fn [] (merge-stream (stream-cdr s1) (stream-cdr s2))))))))
+                      :else (cons-stream s1car (merge-stream (stream-cdr s1) (stream-cdr s2)))))))
 
 (def S (cons-stream 1 
-                    (fn []
-                      (merge-stream (scale-stream S 2)
-                                    (merge-stream (scale-stream S 3)
-                                                  (scale-stream S 5))))))
+                    (merge-stream (scale-stream S 2)
+                                  (merge-stream (scale-stream S 3)
+                                                (scale-stream S 5)))))
 
 (defn integrate-series
   [s1 s2]
