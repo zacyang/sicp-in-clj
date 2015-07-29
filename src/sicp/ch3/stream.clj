@@ -132,6 +132,14 @@
 
 (def primes (sieve (integers-starting-from 2)))
 
+(defn stream-maps 
+  [proc & streams]
+  (if (stream-null? (first streams))
+    the-empty-stream
+    (cons-stream
+     (apply proc (map stream-car streams))
+     (apply stream-maps (cons proc (map stream-cdr streams))))))
+
 ;;def integer in manner of church number
 (defn add-stream 
   [s1 s2]
@@ -142,13 +150,6 @@
 (def integers
   (cons-stream 1 (add-stream ONES integers)))
 
-(defn stream-maps 
-  [proc & streams]
-  (if (stream-null? (first streams))
-    the-empty-stream
-    (cons-stream
-     (apply proc (map stream-car streams))
-     (apply stream-maps (cons proc (map stream-cdr streams))))))
 
 ;;this wont work, since no delay
 ;; (def fibs
@@ -216,6 +217,10 @@
                       
                       :else (cons-stream s1car (merge-stream (stream-cdr s1) (stream-cdr s2)))))))
 
+(defn scale-stream 
+  [stream factor]
+  (stream-map (partial * factor) stream))
+
 (def S (cons-stream 1 
                     (merge-stream (scale-stream S 2)
                                   (merge-stream (scale-stream S 3)
@@ -241,10 +246,23 @@
   (guesses)))
 
 
+;; (defn pi-summands
+;;   [n]
+;;   (cons-stream (/ 1.0 n)
+;;                (stream-map - (pi-summands (+ n 2)))))
+
+(defn- inner-summands 
+  [n step-fn]
+  (cons-stream (/ 1.0 n)
+               (stream-map - (inner-summands (step-fn n) step-fn))))
+
 (defn pi-summands
   [n]
-  (cons-stream (/ 1.0 n)
-               (stream-map - (pi-summands (+ n 2)))))
+  (inner-summands n #(+ % 2)))
+
+(defn sqrt-summands
+  [n]
+  (inner-summands n inc))
 
 (def pi-stream 
   (scale-stream (partial-sums (pi-summands 1)) 
@@ -273,16 +291,17 @@
 
 (defn stream-limit
   [stream tolerance]
-  (println "-------------->" stream-ref stream 0)
   (if  (> tolerance 
-          (#(Math/abs %) 
+          ((fn abs [x] (max x (- x)))
            (- (stream-ref stream 0)
               (stream-ref stream 1)))
           )
-    (stream-ref stream 0)
-    (stream-limit (stream-ref stream 2) tolerance)
+     (stream-ref stream 0)
+     (stream-limit (-> stream stream-cdr stream-cdr) tolerance)
     ))
 
 (defn sqrt-by-stream 
   [x tolerance]
   (stream-limit (sqrt-stream x) tolerance))
+
+

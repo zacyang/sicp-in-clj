@@ -69,6 +69,11 @@
       (stream-ref factorials 4) => 120
 )
 
+(fact "3.55 partial-sums"
+      (let [test-stream (partial-sums integers)]
+        (stream-ref test-stream 0) => 1
+        (stream-ref test-stream 4) => 15))
+
 (fact "book example, sqrt as a stream"
       (let [test-stream (sqrt-stream 2)]
         (> 1.42  (stream-ref test-stream 10)) => true 
@@ -78,5 +83,11 @@
 (fact "book example, pi as stream"
       (stream-ref pi-stream 100) => 3.1514934010709914
       (stream-ref (euler-transform pi-stream) 10 ) =>  3.1417360992606667
-      (stream-ref (accelerated-sequence euler-transform pi-stream) 10) => 3.14
+      (stream-ref (accelerated-sequence euler-transform pi-stream) 9) => 3.141592653589795
 )
+
+(fact "3.64, sqrt with stream "
+      (sqrt-by-stream 2 0.00001) => 1.4142135623746899)
+
+(fact "3.65 caculate sqrt with accelerate algri"
+      (stream-ref (euler-transform (sqrt-summands 2)) 10 ) => 1.1412919424788615E-4)
