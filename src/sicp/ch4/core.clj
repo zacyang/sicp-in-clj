@@ -1,5 +1,8 @@
 (ns sicp.ch4.core)
 
+(declare EVAL)
+(declare APPLY)
+
 (defn- tagged-list?
   "check if the list is starts with some specific tag"
   [exp tag]
@@ -106,6 +109,11 @@
     (EVAL (if-consequent exp) env)
     (EVAL (if-alternative exp) env)))
 
+(defn make-if 
+  [pred consequent alternative]
+  (list 'if pred consequent alternative))
+
+
 (defn lambda?
   [exp]
   (tagged-list? exp 'lambda)
@@ -124,10 +132,12 @@
   [parameters body env])
 
 (defn- begin?
-  [exp])
+  [exp]
+  (tagged-list? exp 'begin))
 
 (defn- begin-actions
-  [exp env])
+  [exp env]
+  (rest exp))
 
 (defn- last-exp?
   [seq]
@@ -140,6 +150,16 @@
 (defn- rest-exps
   [seq]
   (rest seq))
+
+(defn make-begin
+  [seq]
+  (cons 'begin seq))
+
+(defn sequence->exp
+  [seq]
+  (cond (nil? seq) seq
+        (last-exp? seq) (first-exp seq)
+        :else (make-begin seq)))
 
 (defn- eval-sequence
   [exps env]
@@ -154,7 +174,8 @@
   [exp env])
 
 (defn- application?
-  [exp])
+  [exp]
+  )
 
 (defn- operator
   [exp])
