@@ -58,61 +58,67 @@
 ;;   :OK)
 
 
-(defn- definition?
+(defn definition?
   [exp]
   (tagged-list? exp 'define))
 
 
-(defn- eval-definition
+(defn eval-definition
   [exp env])
 
-(defn- definition-variable
+(defn definition-variable
   [exp]
   (if (symbol? (second exp))
     (second exp)
     (ffirst (rest exp))))
 
-(defn- make-lambda
+(defn make-lambda
   [parameters body]
   (cons 'lambda (cons parameters body)))
 
-(defn- definition-value 
+(defn definition-value 
   [exp]
-  (if (symbol? (second exp)) (ffirst (rest exp))
+  (if (symbol? (second exp)) (nth exp 2)
       (make-lambda (rest (first  (rest exp)))
                    (rest (rest exp)))))
 
-(defn- if?
-  [exp])
+(defn if?
+  [exp]
+  (tagged-list? exp 'if))
 
-(defn- if-predicate 
+(defn if-predicate 
   [exp]
   (second exp))
 
-(defn- if-consequent
+(defn if-consequent
   [exp]
   (nth exp 2))
 
-(defn- if-alternative
+(defn if-alternative
   [exp]
   (if (not (nil? (rest  (rest (rest exp)))))
     (nth exp 3)
     'false))
 
-(defn- eval-if
+(defn eval-if
   [exp env]
   (if (true? (EVAL (if-predicate exp) env))
     (EVAL (if-consequent exp) env)
     (EVAL (if-alternative exp) env)))
 
-(defn- lambda?
-  [exp])
+(defn lambda?
+  [exp]
+  (tagged-list? exp 'lambda)
+)
 
-(defn- lambda-parameters
-  [exp])
+(defn lambda-parameters
+  [exp]
+  (second exp))
 
-(defn- lambda-body
-  [exp])
+(defn lambda-body
+  [exp]
+  (rest (rest exp)))
+
 
 (defn- make-procedure
   [parameters body env])

@@ -22,9 +22,15 @@
       "defnition-variable should be able to get the variable name"
       (definition-variable '(define (some-fn arg1 arg2) (body))) => some-fn
       (definition-variable '(define some-fn (lambda (arg1 arg2) (body)))) => some-fn
-      (definition-variable '(define some-value 1)) => some-value
-
-
+      (definition-variable '(define some-value 1)) => 'some-value
 )
 
 
+(fact "lambda tests"
+      (lambda? '(lambda (arg1 arg2) (body))) => true
+      (lambda? '(hehe (arg1 arg2) (body))) => false
+      
+      (lambda-parameters '(lambda (arg1 arg2) body)) => '(arg1 arg2)
+
+      (lambda-body '(lambda (arg1 arg2) body)) => '(body)
+)
