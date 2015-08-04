@@ -39,4 +39,6 @@
       (cond?  '(cond)) => true
       (cond->clauses '(cond test1 do1 test2 do2)) => '(test1 do1 test2 do2)
 
-      (expand-clauses (cond->clauses '(cond (test1 do1) (test2 do2)))) => '(if test1 (begin do1) (if test2 (begin do2) :DONE)))
+      (expand-clauses (cond->clauses '(cond (test1 do1) (test2 do2)))) => '(if test1 (begin do1) (if test2 (begin do2) nil)))
+
+

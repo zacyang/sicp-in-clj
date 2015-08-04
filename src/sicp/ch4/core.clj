@@ -25,8 +25,7 @@
 
 (defn- quoted?
   [exp]
-  (tagged-list? exp 'quoted)
-  )
+  (tagged-list? exp 'quoted))
 
 (defn- text-of-quotation
   [exp]
@@ -34,8 +33,7 @@
 
 (defn- assignment? 
   [exp]
-  (tagged-list? exp 'set!)
-)
+  (tagged-list? exp 'set!))
 
 (defn- assignment-variable
   [exp]
@@ -129,7 +127,8 @@
 
 
 (defn- make-procedure
-  [parameters body env])
+  [parameters body env]
+  (list 'procedure parameters body env))
 
 (defn- begin?
   [exp]
@@ -191,7 +190,7 @@
 
 (defn expand-clauses
   [exp]
-  (if (or  (nil? exp) (empty? exp)) :DONE
+  (if (or  (nil? exp) (empty? exp)) nil
       (let [first-clause (first exp)
             rest-clauses (rest exp)]
         (if (cond-else-clause? first-clause)
@@ -213,8 +212,7 @@
 
 (defn- application?
   [exp]
-  (list? exp)
-  )
+  (list? exp))
 
 (defn- operator
   [exp]
@@ -245,7 +243,8 @@
   [procedure arguments])
 
 (defn- compound-procedure?
-  [procedure])
+  [p]
+  (tagged-list? p 'procedure))
 
 (defn- procedure-body
   [procedure])
@@ -254,7 +253,9 @@
   [proc-args args proc-env])
 
 (defn- procedure-parameters
-  [procedure])
+  [procedure]
+  
+  )
 
 (defn- procedure-enviroment
   [procedure])
