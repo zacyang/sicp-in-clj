@@ -260,6 +260,49 @@
 (defn- procedure-enviroment
   [procedure])
 
+(defn enclosing-enviroment 
+  [env]
+  (rest env))
+
+(defn first-frame
+  [env]
+  (first @env))
+
+(def the-empty-enviroment '())
+
+;;; env frame fns
+
+(defn make-frame
+  [variables values]
+  (atom (cons variables values)))
+
+(defn frame-variables
+  [frame]
+  (first @frame))
+
+(defn frame-values
+  [frame]
+  (rest @frame))
+
+(defn add-binding-to-frame!
+  [var val frame]
+  (swap! frame  (fn [f] (cons (cons var (first f))
+                              (cons val (rest f))))))
+
+(defn extend-enviroment
+  [vars vals base-env]
+  (if (= (count vars) (count vars))
+    (atom (cons @(make-frame vars vals) @base-env))
+    (if (< (count vars) (count vals))
+      :ERROR-ARGS-VALS-NOT-MATCH)))
+
+(defn- list-of-values
+  [exps env]
+  (if (no-operands? exps) '()
+      (cons (EVAL (first-operand exps) env)
+            (list-of-values (rest-operands exps) env))))
+
+
 (defn APPLY
   [procedure arguments]
   (cond (primitive-procedure? procedure)
@@ -272,20 +315,12 @@
                                           (procedure-enviroment procedure)))
 
         :else :ERROR
-        )
-  )
-
+        ))
 
 (defn EVAL
   ^{:doc "my own version of eval, in convetion to avoid conflict and confusion, all MY version of the lisp will be capitalized."}
   [exp env]
   
-  (defn- list-of-values
-    [exps env]
-    (if (no-operands? exps) '()
-        (cons (EVAL (first-operand exps) env)
-              (list-of-values (rest-operands exps) env))))
-
   (cond (self-evaluating? exp) exp
         (variable? exp)   (lookup-variable-value exp env)
         (quoted? exp)     (text-of-quotation exp)
@@ -300,8 +335,7 @@
         (application? exp) (APPLY (EVAL (operator exp) env)
                                  (list-of-values (operands exp) env)
         )
-        :else :ERROR
-        ))
+        :else :ERROR))
 
 
 
