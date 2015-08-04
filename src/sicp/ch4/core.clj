@@ -270,8 +270,9 @@
 ;;; env frame fns
 
 (defn make-frame
-  [variables values]
-  (atom (cons variables values)))
+  [variables values ]
+  (atom (cons variables 
+              values)))
 
 (defn frame-variables
   [frame]
@@ -317,6 +318,82 @@
               (frame-values frame)))))
   
   (env-loop env))
+
+(defn change-var-binding
+  [var-looking-for val-to-be-set frame]
+  (def m-vars (atom '()))
+  (def m-vals (atom '()))
+
+  (defn change-env 
+    [var val f]
+      (do (swap! m-vars  #(conj % var ))
+          (swap! m-vals #(conj % val )))
+      (swap! f (fn [_] @(make-frame @m-vars @m-vals))))
+
+  (defn scan 
+    [vars vals]
+    (cond 
+      (or (nil? vars) (empty? vars))       frame
+      (= var-looking-for (first vars))     (do (change-env var-looking-for val-to-be-set frame)
+                                               (scan (rest vars) (rest vals)))
+                                              
+      :else                                (do  (change-env (first vars) (first vals) frame)
+                                                (scan (rest vars) (rest vals)))))
+
+  (let [vars  (frame-variables frame)
+        vals   (frame-values frame)]
+    (scan vars vals)
+    ))
+
+(defn set-variable-value!
+  [var val env]
+  (def m-vars (atom '()))
+  (def m-vals (atom '()))
+
+  (defn change-env 
+    [var val f]
+      (do (swap! m-vars  #(conj % var ))
+          (swap! m-vals #(conj % val )))
+      (swap! f (fn [_] @(make-frame @m-vars @m-vals))))
+
+  (defn env-loop 
+    [env]
+  (defn scan 
+    [vars vals]
+    (cond 
+      (or (nil? vars) (empty? vars))       (env-loop (enclosing-enviroment env))
+      (= var-looking-for (first vars))     (do (change-env var-looking-for val-to-be-set frame)
+                                               (scan (rest vars) (rest vals)))
+                                              
+      :else                                (do  (change-env (first vars) (first vals) frame)
+                                                (scan (rest vars) (rest vals)))))
+
+    (if (= @env @the-empty-enviroment)
+      :ERROR-NO-BOUND-VARIABLE-FOR-SET!
+      (let [frame (first-frame env)]
+        (scan (frame-variables frame)
+              (frame-values frame)))))
+
+  (env-loop env)
+)
+;; (defn set-variable-value!
+;;   [var val env]
+;;   (defn env-loop 
+;;     [env]
+;;     (defn scan
+;;       [vars vals]
+;;       (cond (or (nil? vars) (empty? vals))     (env-loop (enclosing-enviroment env))
+;;             (= var (first vars))               (change-var-binding var val env)
+;;             :else                              (scan (rest vars) (rest vals))))
+
+;;     (if (= @env @the-empty-enviroment)
+;;       :ERROR-NO-BOUND-VARIABLE-FOR-SET!
+;;       (let [frame (first-frame env)]
+;;         (scan (frame-variables frame)
+;;               (frame-values frame)))))
+
+;;   (env-loop env)
+;; )
 
 (defn APPLY
   [procedure arguments]

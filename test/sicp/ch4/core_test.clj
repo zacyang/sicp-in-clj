@@ -73,18 +73,15 @@
 )
 )
 
-
-
 (fact "env lookup tests"
-      ;; (let [compound-env (extend-enviroment '(e) '(42) (make-frame '() '()))]
-      ;;   (lookup-variable-value 'e compound-env) => 42
-      ;;   (lookup-variable-value 'a compound-env) => :ERROR-NO-BOUND-VARIABLE
-      ;;   )
+      (let [compound-env (extend-enviroment '(e) '(42) (make-frame '() '()))]
+        (lookup-variable-value 'e compound-env) => 42
+        (lookup-variable-value 'a compound-env) => :ERROR-NO-BOUND-VARIABLE
+        )
      
       "should also be able to find val binding in the enclosing env, when binding not exists in current frame"
-      (let [compound-env (extend-enviroment '(e) '(42) (make-frame '(a) '(99)))]
+      (let [compound-env (extend-enviroment '(e) '(42) (extend-enviroment '(a) '(99) the-empty-enviroment))]
         (lookup-variable-value 'a compound-env) => 99)
-
       
 )
 
