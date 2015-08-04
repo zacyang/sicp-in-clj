@@ -55,9 +55,38 @@
       "extend env"
       @(extend-enviroment '(e) '(42) (make-frame '() '())) => '(((e) 42) ())
 
+      "empty env = the-empty-env"
+      (= @(make-frame '() '()) @the-empty-enviroment) => true
+
+      "extend-enviroment"
       (let [extend-env (extend-enviroment '(e) '(42) (make-frame '() '()))]
         @(first-frame extend-env) => '((e) 42)
         (frame-variables (first-frame extend-env)) => '(e)
         (frame-values (first-frame extend-env)) => '(42)
-        ))
+        @(enclosing-enviroment extend-env) => '(())
+        )
+      
+      @(extend-enviroment '(a) '(1) the-empty-enviroment) => '(((a) 1) ())
+      (let [extend-env (extend-enviroment '(a) '(1) the-empty-enviroment)]
+        @extend-env => '(((a) 1) ())
+        @(first-frame extend-env) => '((a) 1)
+)
+)
+
+
+
+(fact "env lookup tests"
+      ;; (let [compound-env (extend-enviroment '(e) '(42) (make-frame '() '()))]
+      ;;   (lookup-variable-value 'e compound-env) => 42
+      ;;   (lookup-variable-value 'a compound-env) => :ERROR-NO-BOUND-VARIABLE
+      ;;   )
+     
+      "should also be able to find val binding in the enclosing env, when binding not exists in current frame"
+      (let [compound-env (extend-enviroment '(e) '(42) (make-frame '(a) '(99)))]
+        (lookup-variable-value 'a compound-env) => 99)
+
+      
+)
+
+
 

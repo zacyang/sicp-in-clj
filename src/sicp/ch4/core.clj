@@ -19,9 +19,6 @@
   [exp]
   (symbol? exp))
 
-(defn- lookup-variable-value 
-  [exp env]
-)
 
 (defn- quoted?
   [exp]
@@ -262,13 +259,13 @@
 
 (defn enclosing-enviroment 
   [env]
-  (rest env))
+  (atom (rest @env)))
 
 (defn first-frame
   [env]
-  (first @env))
+  (atom (first @env)))
 
-(def the-empty-enviroment '())
+(def the-empty-enviroment (atom '(())))
 
 ;;; env frame fns
 
@@ -302,6 +299,24 @@
       (cons (EVAL (first-operand exps) env)
             (list-of-values (rest-operands exps) env))))
 
+(defn lookup-variable-value 
+  [var env]
+
+  (defn env-loop 
+    [env]
+    (defn scan
+      [vars vals]
+      (cond (or  (nil? vars) (empty? vars))    (env-loop (enclosing-enviroment env))
+            (= var (first vars))               (first vals)
+            :else                              (scan (rest vars) (rest vals))))
+
+    (if (= @env @the-empty-enviroment)
+      :ERROR-NO-BOUND-VARIABLE
+      (let [frame (first-frame env)]
+        (scan (frame-variables frame)
+              (frame-values frame)))))
+  
+  (env-loop env))
 
 (defn APPLY
   [procedure arguments]
