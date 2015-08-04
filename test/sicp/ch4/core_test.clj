@@ -33,4 +33,10 @@
       (lambda-parameters '(lambda (arg1 arg2) body)) => '(arg1 arg2)
 
       (lambda-body '(lambda (arg1 arg2) body)) => '(body)
-)
+      )
+
+(fact "cond tests"
+      (cond?  '(cond)) => true
+      (cond->clauses '(cond test1 do1 test2 do2)) => '(test1 do1 test2 do2)
+
+      (expand-clauses (cond->clauses '(cond (test1 do1) (test2 do2)))) => '(if test1 (begin do1) (if test2 (begin do2) :DONE)))

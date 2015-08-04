@@ -167,21 +167,62 @@
         :else (do  (EVAL (first-exp exps) env)
                    (eval-sequence (rest-exps exps) env))))
 
-(defn- cond?
-  [exp])
+(defn cond?
+  [exp]
+  (tagged-list? exp 'cond))
+
+(defn cond-clauses
+  [clauses]
+  (rest clauses))
+
+(defn cond-predicate
+  [clauses]
+  (if  (list? clauses)
+    (first clauses)
+    :ERROR-NOT-VALID-PRED-OF-COND))
+
+(defn cond-else-clause?
+  [clauses]
+  (= (cond-predicate clauses) 'else))
+
+(defn cond-actions
+  [exp]
+  (rest exp))
+
+(defn expand-clauses
+  [exp]
+  (if (or  (nil? exp) (empty? exp)) :DONE
+      (let [first-clause (first exp)
+            rest-clauses (rest exp)]
+        (if (cond-else-clause? first-clause)
+          (if (nil? rest-clauses)
+            (sequence->exp (cond-actions first-clause))
+            :ERROR-ELSE-NOT-LAST-OF-COND
+            )
+          (make-if (cond-predicate first-clause)
+                   (sequence->exp (cond-actions first-clause))
+                   (expand-clauses rest-clauses))))))
+
+(defn cond->clauses
+  [exp]
+  (rest exp))
 
 (defn- cond->if
-  [exp env])
+  [exp env]
+  (expand-clauses (cond->clauses exp)))
 
 (defn- application?
   [exp]
+  (list? exp)
   )
 
 (defn- operator
-  [exp])
+  [exp]
+  (first exp))
 
 (defn- operands
-  [exp])
+  [exp]
+  (rest exp))
 
 (defn- no-operands?
   [ops]
