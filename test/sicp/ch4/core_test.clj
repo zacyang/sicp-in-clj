@@ -56,7 +56,7 @@
       @(extend-enviroment '(e) '(42) (make-frame '() '())) => '(((e) 42) ())
 
       "empty env = the-empty-env"
-      (= @(make-frame '() '()) @the-empty-enviroment) => true
+      (= @(make-frame '() '()) @the-empty-environment) => true
 
       "extend-enviroment"
       (let [extend-env (extend-enviroment '(e) '(42) (make-frame '() '()))]
@@ -66,8 +66,8 @@
         @(enclosing-enviroment extend-env) => '(())
         )
       
-      @(extend-enviroment '(a) '(1) the-empty-enviroment) => '(((a) 1) ())
-      (let [extend-env (extend-enviroment '(a) '(1) the-empty-enviroment)]
+      @(extend-enviroment '(a) '(1) the-empty-environment) => '(((a) 1) ())
+      (let [extend-env (extend-enviroment '(a) '(1) the-empty-environment)]
         @extend-env => '(((a) 1) ())
         @(first-frame extend-env) => '((a) 1)
 )
@@ -80,10 +80,37 @@
         )
      
       "should also be able to find val binding in the enclosing env, when binding not exists in current frame"
-      (let [compound-env (extend-enviroment '(e) '(42) (extend-enviroment '(a) '(99) the-empty-enviroment))]
+      (let [compound-env (extend-enviroment '(e) '(42) (extend-enviroment '(a) '(99) the-empty-environment))]
         (lookup-variable-value 'a compound-env) => 99)
+
+
+      (let [compound-env (extend-enviroment '(e var1 var2 var3) '(42 "var1-val" "var2-val" "var3-val") (extend-enviroment '(a) '(99) the-empty-environment))]
+        (lookup-variable-value 'var1 compound-env) => "var1-val")
       
 )
+
+(fact "change var binding , for current frame"
+      (let [target-env (make-frame '(a b c) '(1 3 42)) ]
+        @(change-var-binding! 'b 2 target-env) => '((c b a) 42 2 1)
+        "should return the same env as passed in"
+        @(change-var-binding! 'x 99 target-env) => '((a b c) 1 2 42))
+
+      ;; (let [target-env (extend-enviroment '(a b c) '(1 3 42) the-empty-enviroment)]
+      ;;   @(change-var-binding! 'b 2 target-env) => '((c b a) 42 2 1)
+      ;;   )
+
+
+      
+      (let [compound-env (extend-enviroment '(e) '(42) (extend-enviroment '(a) '(99) the-empty-environment))]
+        "not exist var, error"
+        @(set-variable-value! 'b 2 compound-env) => '(((e) 42) ((a) 99) ())
+         
+        "existing binding var, change enviroment"
+        @(set-variable-value! 'a 1 compound-env) => ' (((e) 42) ((a) 1) ()))
+
+)
+      
+
 
 
 

@@ -265,7 +265,7 @@
   [env]
   (atom (first @env)))
 
-(def the-empty-enviroment (atom '(())))
+(def the-empty-environment (atom '(())))
 
 ;;; env frame fns
 
@@ -311,7 +311,7 @@
             (= var (first vars))               (first vals)
             :else                              (scan (rest vars) (rest vals))))
 
-    (if (= @env @the-empty-enviroment)
+    (if (= @env @the-empty-environment)
       :ERROR-NO-BOUND-VARIABLE
       (let [frame (first-frame env)]
         (scan (frame-variables frame)
@@ -319,7 +319,7 @@
   
   (env-loop env))
 
-(defn change-var-binding
+(defn change-var-binding!
   [var-looking-for val-to-be-set frame]
   (def m-vars (atom '()))
   (def m-vals (atom '()))
@@ -345,55 +345,60 @@
     (scan vars vals)
     ))
 
+
+;; (defn set-variable-value!
+;;   [var-looking-for val-to-be-set current-env]
+  
+;;   (defn env-loop
+;;     [frame]
+;;     (defn scan
+;;       [vars vals]
+;;       (cond (or (nil? vars) (empty? vars))     (env-loop (enclosing-enviroment current-env))
+;;             (= var-looking-for (first vars)) (change-var-binding! var-looking-for val-to-be-set frame)
+;;             :else                            (scan (rest vars) (rest vals))))
+    
+;;     (if (= @frame @the-empty-environment) 
+;;       :ERROR-TRY-SET-UNBOUND-VARIABLE
+      
+;;       (let [frame (first-frame frame)]
+;;         (scan (frame-variables frame)
+;;               (frame-values   frame)))))
+
+;;   (env-loop current-env)
+;; )
+
+
 (defn set-variable-value!
-  [var val env]
-  (def m-vars (atom '()))
-  (def m-vals (atom '()))
+  [var-looking-for val-to-be-set env]
+  (def ^:dynamic *result-env* (atom '(())))
+  (defn find-and-change [vars vals]
+    (cond
+     (empty? vars)   '()
+     (= (first vars) var-looking-for)  (conj (find-and-change (rest vars) (rest vals))  val-to-be-set) 
+     :else (conj (find-and-change (rest vars) (rest vals)) (first vals))))
 
-  (defn change-env 
-    [var val f]
-      (do (swap! m-vars  #(conj % var ))
-          (swap! m-vals #(conj % val )))
-      (swap! f (fn [_] @(make-frame @m-vars @m-vals))))
-
-  (defn env-loop 
-    [env]
-  (defn scan 
-    [vars vals]
-    (cond 
-      (or (nil? vars) (empty? vars))       (env-loop (enclosing-enviroment env))
-      (= var-looking-for (first vars))     (do (change-env var-looking-for val-to-be-set frame)
-                                               (scan (rest vars) (rest vals)))
-                                              
-      :else                                (do  (change-env (first vars) (first vals) frame)
-                                                (scan (rest vars) (rest vals)))))
-
-    (if (= @env @the-empty-enviroment)
-      :ERROR-NO-BOUND-VARIABLE-FOR-SET!
-      (let [frame (first-frame env)]
-        (scan (frame-variables frame)
-              (frame-values frame)))))
+  (defn env-loop
+    [e]
+    
+    (if (= @env @the-empty-environment) 
+      :ERROR-TRY-SET-UNBOUND-VARIABLE
+      (let  [frame (first-frame e)
+             frame-vars (frame-variables frame)
+             frame-vals (frame-values frame)]
+        
+        (if (not= @(enclosing-enviroment e) @the-empty-environment)
+          (extend-enviroment frame-variables frame-values (env-loop (enclosing-enviroment e)))
+          (extend-enviroment 
+           frame-vars
+           (find-and-change frame-vars frame-vals)
+           the-empty-environment)))
+      
+))
 
   (env-loop env)
 )
-;; (defn set-variable-value!
-;;   [var val env]
-;;   (defn env-loop 
-;;     [env]
-;;     (defn scan
-;;       [vars vals]
-;;       (cond (or (nil? vars) (empty? vals))     (env-loop (enclosing-enviroment env))
-;;             (= var (first vars))               (change-var-binding var val env)
-;;             :else                              (scan (rest vars) (rest vals))))
 
-;;     (if (= @env @the-empty-enviroment)
-;;       :ERROR-NO-BOUND-VARIABLE-FOR-SET!
-;;       (let [frame (first-frame env)]
-;;         (scan (frame-variables frame)
-;;               (frame-values frame)))))
 
-;;   (env-loop env)
-;; )
 
 (defn APPLY
   [procedure arguments]
