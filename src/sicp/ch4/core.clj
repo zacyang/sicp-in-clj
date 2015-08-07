@@ -370,7 +370,7 @@
 
 (defn set-variable-value!
   [var-looking-for val-to-be-set env]
-  (def ^:dynamic *result-env* (atom '(())))
+
   (defn find-and-change [vars vals]
     (cond
      (empty? vars)   '()
@@ -382,19 +382,15 @@
     
     (if (= @env @the-empty-environment) 
       :ERROR-TRY-SET-UNBOUND-VARIABLE
-      (let  [frame (first-frame e)
-             frame-vars (frame-variables frame)
-             frame-vals (frame-values frame)]
+      (let  [frame        (first-frame e)
+             frame-vars   (frame-variables frame)
+             frame-vals   (frame-values frame)
+             updated-vals (find-and-change frame-vars frame-vals)]
         
         (if (not= @(enclosing-enviroment e) @the-empty-environment)
-          (extend-enviroment frame-variables frame-values (env-loop (enclosing-enviroment e)))
-          (extend-enviroment 
-           frame-vars
-           (find-and-change frame-vars frame-vals)
-           the-empty-environment)))
-      
-))
-
+          (extend-enviroment frame-vars updated-vals (env-loop (enclosing-enviroment e)))
+          (extend-enviroment frame-vars updated-vals the-empty-environment)))))
+  
   (env-loop env)
 )
 

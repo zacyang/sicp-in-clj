@@ -103,11 +103,13 @@
       
       (let [compound-env (extend-enviroment '(e) '(42) (extend-enviroment '(a) '(99) the-empty-environment))]
         "not exist var, error"
-        @(set-variable-value! 'b 2 compound-env) => '(((e) 42) ((a) 99) ())
+    ;;    @(set-variable-value! 'b 2 compound-env) => '(((e) 42) ((a) 99) ())
          
         "existing binding var, change enviroment"
-        @(set-variable-value! 'a 1 compound-env) => ' (((e) 42) ((a) 1) ()))
-
+  ;;      @(set-variable-value! 'a 1 compound-env) => '(((e) 42) ((a) 1) ())
+        @(set-variable-value! 'e 1 compound-env) => '(((e) 1) ((a) 99) ())
+        )
+      
 )
       
 
