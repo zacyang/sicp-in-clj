@@ -95,22 +95,16 @@
         "should return the same env as passed in"
         @(change-var-binding! 'x 99 target-env) => '((a b c) 1 2 42))
 
-      ;; (let [target-env (extend-enviroment '(a b c) '(1 3 42) the-empty-enviroment)]
-      ;;   @(change-var-binding! 'b 2 target-env) => '((c b a) 42 2 1)
-      ;;   )
-
-
-      
-      (let [compound-env (extend-enviroment '(e) '(42) (extend-enviroment '(a) '(99) the-empty-environment))]
+       (let [compound-env (extend-enviroment '(e) '(42) (extend-enviroment '(a) '(99) the-empty-environment))]
         "not exist var, error"
-    ;;    @(set-variable-value! 'b 2 compound-env) => '(((e) 42) ((a) 99) ())
+        @(set-variable-value! 'b 2 compound-env) => '(((e) 42) ((a) 99) ())
          
         "existing binding var, change enviroment"
-  ;;      @(set-variable-value! 'a 1 compound-env) => '(((e) 42) ((a) 1) ())
+        @(set-variable-value! 'a 1 compound-env) => '(((e) 42) ((a) 1) ())
         @(set-variable-value! 'e 1 compound-env) => '(((e) 1) ((a) 99) ())
-        )
-      
-)
+        
+        (set-variable-value! 'not-exist 22 the-empty-environment) => :ERROR-TRY-SET-UNBOUND-VARIABLE
+))
       
 
 

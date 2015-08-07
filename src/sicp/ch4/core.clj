@@ -3,7 +3,7 @@
 (declare EVAL)
 (declare APPLY)
 
-(defn- tagged-list?
+(defn tagged-list?
   "check if the list is starts with some specific tag"
   [exp tag]
   (if (list? exp) (= (first exp) tag)
@@ -233,29 +233,30 @@
 
 ;; APPLY related funtions
 
-(defn- primitive-procedure?
+(defn primitive-procedure?
   [procedure])
 
-(defn- apply-primitive-procedure
+(defn apply-primitive-procedure
   [procedure arguments])
 
-(defn- compound-procedure?
+(defn compound-procedure?
   [p]
   (tagged-list? p 'procedure))
 
-(defn- procedure-body
-  [procedure])
-
-(defn- extend-enviroment
-  [proc-args args proc-env])
-
-(defn- procedure-parameters
+(defn procedure-body
   [procedure]
-  
+  (nth procedure 3)
+)
+
+(defn procedure-parameters
+  [procedure]
+  (second procedure)
   )
 
 (defn- procedure-enviroment
-  [procedure])
+  [procedure]
+  (nth procedure 4)
+)
 
 (defn enclosing-enviroment 
   [env]
@@ -345,29 +346,6 @@
     (scan vars vals)
     ))
 
-
-;; (defn set-variable-value!
-;;   [var-looking-for val-to-be-set current-env]
-  
-;;   (defn env-loop
-;;     [frame]
-;;     (defn scan
-;;       [vars vals]
-;;       (cond (or (nil? vars) (empty? vars))     (env-loop (enclosing-enviroment current-env))
-;;             (= var-looking-for (first vars)) (change-var-binding! var-looking-for val-to-be-set frame)
-;;             :else                            (scan (rest vars) (rest vals))))
-    
-;;     (if (= @frame @the-empty-environment) 
-;;       :ERROR-TRY-SET-UNBOUND-VARIABLE
-      
-;;       (let [frame (first-frame frame)]
-;;         (scan (frame-variables frame)
-;;               (frame-values   frame)))))
-
-;;   (env-loop current-env)
-;; )
-
-
 (defn set-variable-value!
   [var-looking-for val-to-be-set env]
 
@@ -380,7 +358,7 @@
   (defn env-loop
     [e]
     
-    (if (= @env @the-empty-environment) 
+    (if (= @e @the-empty-environment) 
       :ERROR-TRY-SET-UNBOUND-VARIABLE
       (let  [frame        (first-frame e)
              frame-vars   (frame-variables frame)
