@@ -29,11 +29,14 @@
                    ))
     (println obj)))
 
+(def current-env (atom @setup/the-global-environment))
+
 (defn driver-loop
   []
   (prompt-for-input INPUT-PROMPT)
   (let [input (read)
-        output (core/EVAL input the-global-environment)]
+        output (core/EVAL input current-env)]
+    (prompt-for-input input )
     (announce-output OUTPUT-PROMPT)
     (user-print output))
 

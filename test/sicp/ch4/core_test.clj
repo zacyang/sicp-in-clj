@@ -69,9 +69,7 @@
       @(extend-enviroment '(a) '(1) the-empty-environment) => '(((a) 1) ())
       (let [extend-env (extend-enviroment '(a) '(1) the-empty-environment)]
         @extend-env => '(((a) 1) ())
-        @(first-frame extend-env) => '((a) 1)
-)
-)
+        @(first-frame extend-env) => '((a) 1)))
 
 (fact "env lookup tests"
       (let [compound-env (extend-enviroment '(e) '(42) (make-frame '() '()))]
@@ -93,6 +91,7 @@
        (let [compound-env (extend-enviroment '(e) '(42) (extend-enviroment '(a) '(99) the-empty-environment))]
         "not exist var, error"
         @(set-variable-value! 'b 2 compound-env) => '(((e) 42) ((a) 99) ())
+        
          
         "existing binding var, change enviroment"
         @(set-variable-value! 'a 1 compound-env) => '(((e) 42) ((a) 1) ())
@@ -105,8 +104,19 @@
         @(define-variable! 'some-var '77 compound-env) => '(((some-var e) 77 42) ((a) 99) ())
 )
 
+(fact "def tests"
+      (let  [compound-env (extend-enviroment '(e) '(42) (extend-enviroment '(a) '(99) the-empty-environment))]
+      @(eval-definition '(define x 10) compound-env) => '(((x e) 10 42) ((a) 99) ())
+      
+      @compound-env = > '(((x e) 10 42) ((a) 99) ())
 
-)
+
+      (EVAL 'x compound-env) => 10
+
+      (EVAL 'e compound-env) => 42
+
+
+)))
       
 
 

@@ -5,7 +5,7 @@
 
 (defn primitive-procesdure?
   [proc]
-  (tagged-list? proc 'primitive))
+  (core/tagged-list? proc 'primitive))
 
 (defn primitive-implementation
   [proc]
@@ -32,11 +32,14 @@
 
 (defn setup-environment
   []
-  (let [initial-env (extend-enviroment primitive-procedure-names
+  (let [initial-env (core/extend-enviroment primitive-procedure-names
                                        primitive-procedure-objects
-                                       the-empty-environment)]
-    (core/define-variable! 'true true initial-env)
-    (core/define-variable! 'false false initial-env)))
+                                       core/the-empty-environment)]
+    (->> initial-env
+         (core/define-variable! 'true true)
+         (core/define-variable! 'false false))
+
+))
 
 (def the-global-environment (setup-environment))
 

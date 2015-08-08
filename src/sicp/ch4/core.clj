@@ -3,6 +3,9 @@
 (declare EVAL)
 (declare APPLY)
 
+(declare set-variable-value!)
+(declare define-variable!)
+
 (defn tagged-list?
   "check if the list is starts with some specific tag"
   [exp tag]
@@ -18,7 +21,6 @@
 (defn- variable?
   [exp]
   (symbol? exp))
-
 
 (defn- quoted?
   [exp]
@@ -42,9 +44,12 @@
 
 (defn eval-assignment
   [exp env]
-  (set-variable-value! (assignment-variable exp)
-                       (EVAL (assignment-value exp) env)
-                       env)
+  (let [new-env   (set-variable-value! (assignment-variable exp)
+                                       (EVAL (assignment-value exp) env)
+                                       env)]
+    (swap! env (fn [_] @new-env))
+)
+
   :OK)
 
 
@@ -52,13 +57,9 @@
   [exp]
   (tagged-list? exp 'define))
 
-
-(defn eval-definition
-  [exp env]
-  (define-variable!
-    (definition-variable exp) 
-    (EVAL (definition-value exp) env)
-    env))
+(defn make-lambda
+  [parameters body]
+  (cons 'lambda (cons parameters body)))
 
 (defn definition-variable
   [exp]
@@ -66,15 +67,22 @@
     (second exp)
     (ffirst (rest exp))))
 
-(defn make-lambda
-  [parameters body]
-  (cons 'lambda (cons parameters body)))
-
 (defn definition-value 
   [exp]
   (if (symbol? (second exp)) (nth exp 2)
       (make-lambda (rest (first  (rest exp)))
                    (rest (rest exp)))))
+
+(defn eval-definition
+  [exp env]
+  (let [new-env   (define-variable!
+                    (definition-variable exp) 
+                    (EVAL (definition-value exp) env)
+                    env)]
+    (swap! env (fn [_] new-env))
+
+    )
+)
 
 (defn if?
   [exp]
@@ -107,8 +115,7 @@
 
 (defn lambda?
   [exp]
-  (tagged-list? exp 'lambda)
-)
+  (tagged-list? exp 'lambda))
 
 (defn lambda-parameters
   [exp]
@@ -117,7 +124,6 @@
 (defn lambda-body
   [exp]
   (rest (rest exp)))
-
 
 (defn- make-procedure
   [parameters body env]
