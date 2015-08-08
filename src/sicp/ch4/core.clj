@@ -40,20 +40,12 @@
   [exp]
   (nth exp 3))
 
-;; (defn- eval-definition 
-;;   [exp env]
-;;   (define-variable! (definition-variable exp)
-;;     (EVAL (definition-value exp) env)
-;;     env))
-
-(defn- eval-assignment
-  [exp env])
-;; (defn- eval-assignment
-;;   [exp env]
-;;   (set-variable-value! (assignment-variable exp)
-;;                        (EVAL (assignment-value exp) env)
-;;                        env)
-;;   :OK)
+(defn eval-assignment
+  [exp env]
+  (set-variable-value! (assignment-variable exp)
+                       (EVAL (assignment-value exp) env)
+                       env)
+  :OK)
 
 
 (defn definition?
@@ -62,7 +54,11 @@
 
 
 (defn eval-definition
-  [exp env])
+  [exp env]
+  (define-variable!
+    (definition-variable exp) 
+    (EVAL (definition-value exp) env)
+    env))
 
 (defn definition-variable
   [exp]
@@ -289,11 +285,16 @@
                               (cons val (rest f))))))
 
 (defn extend-enviroment
-  [vars vals base-env]
-  (if (= (count vars) (count vars))
-    (atom (cons @(make-frame vars vals) @base-env))
-    (if (< (count vars) (count vals))
-      :ERROR-ARGS-VALS-NOT-MATCH)))
+  ([vars vals base-env]
+   (if (= (count vars) (count vars))
+     (atom (cons @(make-frame vars vals) @base-env))
+     (if (< (count vars) (count vals))
+       :ERROR-ARGS-VALS-NOT-MATCH)))
+  
+  ([frame base-env]
+   (atom (cons @frame @base-env))
+   )
+)
 
 (defn- list-of-values
   [exps env]
@@ -320,31 +321,6 @@
   
   (env-loop env))
 
-(defn change-var-binding!
-  [var-looking-for val-to-be-set frame]
-  (def m-vars (atom '()))
-  (def m-vals (atom '()))
-
-  (defn change-env 
-    [var val f]
-      (do (swap! m-vars  #(conj % var ))
-          (swap! m-vals #(conj % val )))
-      (swap! f (fn [_] @(make-frame @m-vars @m-vals))))
-
-  (defn scan 
-    [vars vals]
-    (cond 
-      (or (nil? vars) (empty? vars))       frame
-      (= var-looking-for (first vars))     (do (change-env var-looking-for val-to-be-set frame)
-                                               (scan (rest vars) (rest vals)))
-                                              
-      :else                                (do  (change-env (first vars) (first vals) frame)
-                                                (scan (rest vars) (rest vals)))))
-
-  (let [vars  (frame-variables frame)
-        vals   (frame-values frame)]
-    (scan vars vals)
-    ))
 
 (defn set-variable-value!
   [var-looking-for val-to-be-set env]
@@ -372,6 +348,14 @@
   (env-loop env)
 )
 
+(defn define-variable! 
+  [var val env]
+
+  (let [frame       (first-frame env)
+        frame-vars  (conj  (frame-variables frame) var)
+        frame-vals  (conj (frame-values frame) val)]
+    (extend-enviroment frame-vars frame-vals (enclosing-enviroment env))
+    ))
 
 
 (defn APPLY

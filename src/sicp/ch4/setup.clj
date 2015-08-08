@@ -35,8 +35,8 @@
   (let [initial-env (extend-enviroment primitive-procedure-names
                                        primitive-procedure-objects
                                        the-empty-environment)]
-    (set-variable-value! 'true true initial-env)
-    (set-variable-value! 'false false initial-env)))
+    (core/define-variable! 'true true initial-env)
+    (core/define-variable! 'false false initial-env)))
 
 (def the-global-environment (setup-environment))
 
