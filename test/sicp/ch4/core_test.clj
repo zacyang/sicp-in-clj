@@ -118,12 +118,7 @@
         (EVAL 'x compound-env) => 10
        
         )
-      
-      (let [compound-env  (extend-enviroment '(e) '(42) (extend-enviroment '(a) '(99) the-empty-environment))]
-        (EVAL '(define add (x) (+ x 1)) compound-env) => :OK
-        
-;;        (EVAL 'add compound-env) => 1
-)
+
 ))
       
 

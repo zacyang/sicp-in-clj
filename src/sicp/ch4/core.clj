@@ -6,6 +6,8 @@
 (declare set-variable-value!)
 (declare define-variable!)
 
+(def apply-in-underlying-clj apply)
+
 (defn tagged-list?
   "check if the list is starts with some specific tag"
   [exp tag]
@@ -208,9 +210,9 @@
   [exp env]
   (expand-clauses (cond->clauses exp)))
 
-(defn- application?
+(defn application?
   [exp]
-  (list? exp))
+  (or (= clojure.lang.Cons (type exp)) (list? exp)))
 
 (defn- operator
   [exp]
@@ -222,7 +224,7 @@
 
 (defn- no-operands?
   [ops]
-  (nil? ops))
+  (or  (nil? ops) (empty? ops)))
 
 (defn- first-operand
   [ops]
@@ -235,10 +237,37 @@
 ;; APPLY related funtions
 
 (defn primitive-procedure?
-  [procedure])
+  [procedure]
+  (tagged-list? procedure 'primitive)
+)
 
-(defn apply-primitive-procedure
-  [procedure arguments])
+(defn primitive-implementation
+  [proc]
+  (second proc))
+
+(def primitive-procedures 
+  (list (list 'car first)
+        (list 'cdr rest)
+        (list 'cons cons)
+        (list 'null? nil?)
+        (list '+ +)
+        (list '- -)
+        (list '* *)
+        (list '/ /)
+        ))
+
+(def primitive-procedure-names
+  (map first primitive-procedures))
+
+(def primitive-procedure-objects
+  (map (fn [proc] (list 'primitive (second proc)))
+       primitive-procedures))
+
+(defn apply-primitive-procedure 
+  [proc args]
+  (apply-in-underlying-clj
+   (primitive-implementation proc) args))
+
 
 (defn compound-procedure?
   [p]
@@ -384,9 +413,9 @@
   (cond (self-evaluating? exp) exp
         (variable? exp)   (lookup-variable-value exp env)
         (quoted? exp)     (text-of-quotation exp)
-        (assignment? exp)  (eval-assignment exp env)
+        (assignment? exp) (eval-assignment exp env)
         (definition? exp) (eval-definition exp env)
-        (if? exp) (eval-if exp env)
+        (if? exp)         (eval-if exp env)
         (lambda? exp)     (make-procedure (lambda-parameters exp)
                                           (lambda-body exp)
                                           env)
