@@ -106,17 +106,25 @@
 
 (fact "def tests"
       (let  [compound-env (extend-enviroment '(e) '(42) (extend-enviroment '(a) '(99) the-empty-environment))]
-      @(eval-definition '(define x 10) compound-env) => '(((x e) 10 42) ((a) 99) ())
+      (eval-definition '(define x 10) compound-env) => :OK
       
-      @compound-env = > '(((x e) 10 42) ((a) 99) ())
+      @compound-env = > '(((x e) 10 42) ((a) 99) ()))
+      
+      (let  [compound-env (extend-enviroment '(e) '(42) (extend-enviroment '(a) '(99) the-empty-environment))]
+        (EVAL 'x compound-env) => :ERROR-NO-BOUND-VARIABLE
+       
+        (EVAL '(define x 10) compound-env)
 
-
-      (EVAL 'x compound-env) => 10
-
-      (EVAL 'e compound-env) => 42
-
-
-)))
+        (EVAL 'x compound-env) => 10
+       
+        )
+      
+      (let [compound-env  (extend-enviroment '(e) '(42) (extend-enviroment '(a) '(99) the-empty-environment))]
+        (EVAL '(define add (x) (+ x 1)) compound-env) => :OK
+        
+;;        (EVAL 'add compound-env) => 1
+)
+))
       
 
 

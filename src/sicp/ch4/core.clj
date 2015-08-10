@@ -9,7 +9,7 @@
 (defn tagged-list?
   "check if the list is starts with some specific tag"
   [exp tag]
-  (if (list? exp) (= (first exp) tag)
+  (if (coll? exp) (= (first exp) tag)
       false))
 
 (defn- self-evaluating?
@@ -79,10 +79,9 @@
                     (definition-variable exp) 
                     (EVAL (definition-value exp) env)
                     env)]
-    (swap! env (fn [_] new-env))
-
-    )
-)
+    (swap! env (fn [_] @new-env))
+    :OK
+    ))
 
 (defn if?
   [exp]
@@ -397,9 +396,5 @@
                                  (list-of-values (operands exp) env)
         )
         :else :ERROR))
-
-
-
-
 
 
