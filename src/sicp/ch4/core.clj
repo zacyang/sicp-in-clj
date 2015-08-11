@@ -128,7 +128,7 @@
 
 (defn- make-procedure
   [parameters body env]
-  (list 'procedure parameters body env))
+  (list 'procedure parameters body @env))
 
 (defn- begin?
   [exp]
@@ -140,7 +140,8 @@
 
 (defn- last-exp?
   [seq]
-  (nil? (rest seq)))
+  (let [rest-seq (rest seq)]
+    (or (nil? rest-seq) (empty? rest-seq))))
 
 (defn- first-exp
   [seq]
@@ -275,7 +276,7 @@
 
 (defn procedure-body
   [procedure]
-  (nth procedure 3)
+  (nth procedure 2)
 )
 
 (defn procedure-parameters
@@ -285,8 +286,7 @@
 
 (defn- procedure-enviroment
   [procedure]
-  (nth procedure 4)
-)
+  (atom (nth procedure 3)))
 
 (defn enclosing-enviroment 
   [env]
