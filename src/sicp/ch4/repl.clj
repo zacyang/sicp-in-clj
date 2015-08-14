@@ -1,4 +1,5 @@
 (ns sicp.ch4.repl
+  (:gen-class)
   (:require [sicp.ch4.setup :as setup] 
             [sicp.ch4.core :as core]))
 
@@ -43,3 +44,8 @@
   (driver-loop)
 )
 
+(defn -main
+  []
+  (println "scheme interpreter in clojure :) ")
+  (driver-loop)
+  )
