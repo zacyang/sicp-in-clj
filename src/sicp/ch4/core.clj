@@ -79,7 +79,7 @@
   [exp env]
   (let [new-env   (define-variable!
                     (definition-variable exp) 
-                    (EVAL (definition-value exp) env)
+                    (fn [] (EVAL (definition-value exp) env))
                     env)]
     (swap! env (fn [_] @new-env))
     :OK
@@ -246,15 +246,15 @@
   (second proc))
 
 (def primitive-procedures 
-  (list (list 'car first)
-        (list 'cdr rest)
+  (list (list 'car  first)
+        (list 'cdr  rest)
         (list 'cons cons)
-        (list 'null? nil?)
-        (list '+ +)
-        (list '- -)
-        (list '* *)
-        (list '/ /)
-        (list '= =)
+        (list 'null?  nil?)
+        (list '+  +)
+        (list '-  -)
+        (list '*  *)
+        (list '/  /)
+        (list '=  =)
         ))
 
 (def primitive-procedure-names
@@ -353,7 +353,11 @@
         (scan (frame-variables frame)
               (frame-values frame)))))
   
-  (env-loop env))
+  (let [result (env-loop env)]
+    (if (fn? result)
+      (result)
+      result))
+)
 
 
 (defn set-variable-value!
@@ -411,7 +415,7 @@
   [exp env]
   
   (cond (self-evaluating? exp) exp
-        (variable? exp)   (lookup-variable-value exp env)
+        (variable? exp)  (lookup-variable-value exp env)
         (quoted? exp)     (text-of-quotation exp)
         (assignment? exp) (eval-assignment exp env)
         (definition? exp) (eval-definition exp env)
