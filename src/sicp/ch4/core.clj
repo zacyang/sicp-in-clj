@@ -113,7 +113,6 @@
   [pred consequent alternative]
   (list 'if pred consequent alternative))
 
-
 (defn lambda?
   [exp]
   (tagged-list? exp 'lambda))
@@ -255,6 +254,7 @@
         (list '- -)
         (list '* *)
         (list '/ /)
+        (list '= =)
         ))
 
 (def primitive-procedure-names

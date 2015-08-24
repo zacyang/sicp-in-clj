@@ -116,7 +116,9 @@
         (EVAL '(define x 10) compound-env)
 
         (EVAL 'x compound-env) => 10
-       
+
+        (EVAL '(define (some-function x) (+ 1 x)) compound-env) => :OK
+
         ))
 
 )
